@@ -330,38 +330,63 @@
                     </div>
 
                     <!-- SELECTOR COMPLETO POR CATEGORÍAS -->
-                    <div class="mb-3.5 space-y-2 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-                        <label class="block text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                            <i class="fa-solid fa-layer-group text-amber-600 mr-1"></i> Catálogo Rápido Arandumí:
-                        </label>
+                    <div class="mb-3.5 space-y-2.5 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-[10px] font-bold text-slate-700 uppercase tracking-wider">
+                                <i class="fa-solid fa-layer-group text-amber-600 mr-1"></i> Catálogo Rápido Arandumí:
+                            </label>
+                            <span class="text-[9px] bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-full">Precios libres en blanco</span>
+                        </div>
                         
                         <!-- Rotacuentos Físicos -->
                         <div>
-                            <span class="text-[9px] font-bold text-slate-400 uppercase block mb-1">Rotacuentos Gigantes (Físicos):</span>
+                            <span class="text-[9px] font-bold text-slate-500 uppercase block mb-1 flex items-center gap-1">
+                                <i class="fa-solid fa-book text-rose-600"></i> Rotacuentos Gigantes (Físicos):
+                            </span>
                             <div class="flex flex-wrap gap-1.5">
-                                <button type="button" onclick="addPreset('Rotacuento Rojo (Físico - Efemérides Patrias & Grandes Héroes)', 85000)" class="text-[10.5px] bg-rose-50 hover:bg-rose-100 text-rose-900 border border-rose-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
+                                <button type="button" onclick="addPreset('Rotacuento Rojo (Físico - Efemérides Patrias & Grandes Héroes)', 0)" class="text-[10.5px] bg-rose-50 hover:bg-rose-100 text-rose-900 border border-rose-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     📕 Rotacuento Rojo (Físico)
                                 </button>
-                                <button type="button" onclick="addPreset('Rotacuento Verde (Físico - Cuentos de la Naturaleza y Ecología)', 85000)" class="text-[10.5px] bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
+                                <button type="button" onclick="addPreset('Rotacuento Verde (Físico - Cuentos de la Naturaleza y Ecología)', 0)" class="text-[10.5px] bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     📗 Rotacuento Verde (Físico)
                                 </button>
-                                <button type="button" onclick="addPreset('Kit Dúo Rotacuentos Físicos (Rojo + Verde Completo)', 155000)" class="text-[10.5px] bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
+                                <button type="button" onclick="addPreset('Kit Dúo Rotacuentos Físicos (Rojo + Verde Completo)', 0)" class="text-[10.5px] bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     📚 Kit Dúo Físicos (Rojo + Verde)
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Rotacuentos Físico + Digital -->
+                        <!-- Kits 100% Digitales Interactivos -->
                         <div>
-                            <span class="text-[9px] font-bold text-slate-400 uppercase block mb-1">Combos Físico + Digital:</span>
+                            <span class="text-[9px] font-bold text-slate-500 uppercase block mb-1 flex items-center gap-1">
+                                <i class="fa-solid fa-laptop-code text-indigo-600"></i> Kits 100% Digitales Interactivos:
+                            </span>
                             <div class="flex flex-wrap gap-1.5">
-                                <button type="button" onclick="addPreset('Rotacuento Rojo (Físico + Licencia Digital Interactiva)', 95000)" class="text-[10.5px] bg-purple-50 hover:bg-purple-100 text-purple-900 border border-purple-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
+                                <button type="button" onclick="addPreset('Kit Digital Rotacuento Rojo (Licencia Interactiva Multiplataforma)', 0)" class="text-[10.5px] bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
+                                    💻 Kit Digital Rojo
+                                </button>
+                                <button type="button" onclick="addPreset('Kit Digital Rotacuento Verde (Licencia Interactiva Multiplataforma)', 0)" class="text-[10.5px] bg-cyan-50 hover:bg-cyan-100 text-cyan-900 border border-cyan-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
+                                    💻 Kit Digital Verde
+                                </button>
+                                <button type="button" onclick="addPreset('Megapack Digital Dúo Rotacuentos (Rojo + Verde Interactivos)', 0)" class="text-[10.5px] bg-violet-50 hover:bg-violet-100 text-violet-900 border border-violet-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
+                                    🚀 Megapack Digital Dúo
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Combos Físico + Digital -->
+                        <div>
+                            <span class="text-[9px] font-bold text-slate-500 uppercase block mb-1 flex items-center gap-1">
+                                <i class="fa-solid fa-mobile-screen-button text-purple-600"></i> Combos Físico + Digital:
+                            </span>
+                            <div class="flex flex-wrap gap-1.5">
+                                <button type="button" onclick="addPreset('Rotacuento Rojo (Físico + Licencia Digital Interactiva)', 0)" class="text-[10.5px] bg-purple-50 hover:bg-purple-100 text-purple-900 border border-purple-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     📲 Rojo Físico + Digital
                                 </button>
-                                <button type="button" onclick="addPreset('Rotacuento Verde (Físico + Licencia Digital Interactiva)', 95000)" class="text-[10.5px] bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
+                                <button type="button" onclick="addPreset('Rotacuento Verde (Físico + Licencia Digital Interactiva)', 0)" class="text-[10.5px] bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     📲 Verde Físico + Digital
                                 </button>
-                                <button type="button" onclick="addPreset('Megapack Rotacuentos Dúo (Rojo + Verde Físico y Digital)', 175000)" class="text-[10.5px] bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
+                                <button type="button" onclick="addPreset('Megapack Rotacuentos Dúo (Rojo + Verde Físico y Digital)', 0)" class="text-[10.5px] bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-900 border border-fuchsia-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     🌟 Megapack Dúo (Físico + Digital)
                                 </button>
                             </div>
@@ -369,15 +394,17 @@
 
                         <!-- Láminas y Libros Infantiles -->
                         <div>
-                            <span class="text-[9px] font-bold text-slate-400 uppercase block mb-1">Láminas, Libritos y Colecciones:</span>
+                            <span class="text-[9px] font-bold text-slate-500 uppercase block mb-1 flex items-center gap-1">
+                                <i class="fa-solid fa-palette text-amber-600"></i> Láminas, Libritos y Colecciones:
+                            </span>
                             <div class="flex flex-wrap gap-1.5">
-                                <button type="button" onclick="addPreset('Megapack de Láminas Gigantes para Actos Escolares', 45000)" class="text-[10.5px] bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
+                                <button type="button" onclick="addPreset('Megapack de Láminas Gigantes para Actos Escolares', 0)" class="text-[10.5px] bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     🎨 Megapack Láminas Gigantes
                                 </button>
-                                <button type="button" onclick="addPreset('Libro Físico Así Soy Yo (Cuerpo Humano & Exploración Didáctica)', 25000)" class="text-[10.5px] bg-orange-50 hover:bg-orange-100 text-orange-900 border border-orange-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
+                                <button type="button" onclick="addPreset('Libro Físico Así Soy Yo (Cuerpo Humano & Exploración Didáctica)', 0)" class="text-[10.5px] bg-orange-50 hover:bg-orange-100 text-orange-900 border border-orange-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     🧒 Libro Así Soy Yo (Cuerpo Humano)
                                 </button>
-                                <button type="button" onclick="addPreset('Megapack Total Arandumí (Rotacuentos Dúo Físico/Digital + Láminas + Así Soy Yo)', 220000)" class="text-[10.5px] bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 px-2 py-0.5 rounded transition font-bold cursor-pointer">
+                                <button type="button" onclick="addPreset('Megapack Total Arandumí (Rotacuentos Dúo Físico/Digital + Láminas + Así Soy Yo)', 0)" class="text-[10.5px] bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 px-2 py-0.5 rounded transition font-bold cursor-pointer">
                                     👑 Megapack Total Arandumí
                                 </button>
                             </div>
@@ -947,7 +974,7 @@
     <script>
         // ESTADO GLOBAL CON PRODUCTO INICIAL EDITABLE
         let orderItems = [
-            { id: 1, name: 'Rotacuento Rojo (Físico - Efemérides Patrias & Grandes Héroes)', qty: 1, price: 85000 }
+            { id: 1, name: 'Rotacuento Rojo (Físico - Efemérides Patrias & Grandes Héroes)', qty: 1, price: 0 }
         ];
 
         let signatureDataUrl = null;
@@ -1279,50 +1306,57 @@
 
             // A) Megapack Total
             if (t.includes('megapack total') || t.includes('pack total') || (t.includes('megapack') && t.includes('completo'))) {
-                let price = extractItemPrice('(?:megapack total|pack total|megapack completo)', 220000);
+                let price = extractItemPrice('(?:megapack total|pack total|megapack completo)', 0);
                 items.push({ name: 'Megapack Total Arandumí (Rotacuentos Dúo Físico/Digital + Láminas + Así Soy Yo)', qty: 1, price: price });
             } else {
-                // B) Megapack Dúo Rotacuentos Físico y Digital
-                if (t.includes('megapack duo') || t.includes('megapack dúo') || (t.includes('duo') && t.includes('digital')) || (t.includes('dúo') && t.includes('digital'))) {
-                    let price = extractItemPrice('(?:megapack d[uú]o|d[uú]o.*digital)', 175000);
+                // B) Megapack Digital Dúo (100% Digital) vs Megapack Dúo (Físico + Digital) vs Kit Dúo Físico
+                if (t.includes('digital duo') || t.includes('digital dúo') || t.includes('kit digital duo') || t.includes('kit digital dúo') || t.includes('pack digital duo') || t.includes('pack digital dúo')) {
+                    let price = extractItemPrice('(?:digital\s*d[uú]o|kit\s*digital\s*d[uú]o)', 0);
+                    items.push({ name: 'Megapack Digital Dúo Rotacuentos (Rojo + Verde Interactivos)', qty: 1, price: price });
+                } else if (t.includes('megapack duo') || t.includes('megapack dúo') || (t.includes('duo') && t.includes('digital')) || (t.includes('dúo') && t.includes('digital'))) {
+                    let price = extractItemPrice('(?:megapack d[uú]o|d[uú]o.*digital)', 0);
                     items.push({ name: 'Megapack Rotacuentos Dúo (Rojo + Verde Físico y Digital)', qty: 1, price: price });
-                }
-                // C) Kit Dúo Rotacuentos Físicos
-                else if (t.includes('combo duo') || t.includes('combo dúo') || t.includes('kit duo') || t.includes('kit dúo') || t.includes('ambos rotacuentos')) {
-                    let price = extractItemPrice('(?:combo|kit)?\s*d[uú]o', 155000);
+                } else if (t.includes('combo duo') || t.includes('combo dúo') || t.includes('kit duo') || t.includes('kit dúo') || t.includes('ambos rotacuentos')) {
+                    let price = extractItemPrice('(?:combo|kit)?\s*d[uú]o', 0);
                     items.push({ name: 'Kit Dúo Rotacuentos Físicos (Rojo + Verde Completo)', qty: 1, price: price });
                 } else {
-                    // D) Rotacuento Rojo (Físico vs Físico + Digital)
+                    // C) Rotacuento Rojo
                     if (t.includes('rojo')) {
-                        if (t.includes('rojo digital') || (t.includes('rojo') && t.includes('digital'))) {
-                            let price = extractItemPrice('(?:rojo.*digital|digital.*rojo)', 95000);
+                        if (t.includes('solo digital') || t.includes('kit digital rojo') || t.includes('licencia roja') || t.includes('rojo interactivo')) {
+                            let price = extractItemPrice('(?:kit\s*digital\s*rojo|digital\s*rojo|rojo.*digital)', 0);
+                            items.push({ name: 'Kit Digital Rotacuento Rojo (Licencia Interactiva Multiplataforma)', qty: 1, price: price });
+                        } else if (t.includes('rojo digital') || (t.includes('rojo') && t.includes('digital'))) {
+                            let price = extractItemPrice('(?:rojo.*digital|digital.*rojo)', 0);
                             items.push({ name: 'Rotacuento Rojo (Físico + Licencia Digital Interactiva)', qty: 1, price: price });
                         } else {
-                            let price = extractItemPrice('(?:rojo|rotacuento rojo|efemerides)', 85000);
+                            let price = extractItemPrice('(?:rojo|rotacuento rojo|efemerides)', 0);
                             items.push({ name: 'Rotacuento Rojo (Físico - Efemérides Patrias & Grandes Héroes)', qty: 1, price: price });
                         }
                     }
-                    // E) Rotacuento Verde (Físico vs Físico + Digital)
+                    // D) Rotacuento Verde
                     if (t.includes('verde')) {
-                        if (t.includes('verde digital') || (t.includes('verde') && t.includes('digital'))) {
-                            let price = extractItemPrice('(?:verde.*digital|digital.*verde)', 95000);
+                        if (t.includes('solo digital') || t.includes('kit digital verde') || t.includes('licencia verde') || t.includes('verde interactivo')) {
+                            let price = extractItemPrice('(?:kit\s*digital\s*verde|digital\s*verde|verde.*digital)', 0);
+                            items.push({ name: 'Kit Digital Rotacuento Verde (Licencia Interactiva Multiplataforma)', qty: 1, price: price });
+                        } else if (t.includes('verde digital') || (t.includes('verde') && t.includes('digital'))) {
+                            let price = extractItemPrice('(?:verde.*digital|digital.*verde)', 0);
                             items.push({ name: 'Rotacuento Verde (Físico + Licencia Digital Interactiva)', qty: 1, price: price });
                         } else {
-                            let price = extractItemPrice('(?:verde|rotacuento verde|ecologia)', 85000);
+                            let price = extractItemPrice('(?:verde|rotacuento verde|ecologia)', 0);
                             items.push({ name: 'Rotacuento Verde (Físico - Cuentos de la Naturaleza y Ecología)', qty: 1, price: price });
                         }
                     }
                 }
 
-                // F) Megapack / Kit Láminas
+                // E) Megapack / Kit Láminas
                 if (t.includes('lamina') || t.includes('lámina') || t.includes('pack de laminas') || t.includes('pack de láminas')) {
-                    let price = extractItemPrice('(?:lamina|lámina|laminas|láminas)', 45000);
+                    let price = extractItemPrice('(?:lamina|lámina|laminas|láminas)', 0);
                     items.push({ name: 'Megapack de Láminas Gigantes para Actos Escolares', qty: 1, price: price });
                 }
 
-                // G) Libro Así Soy Yo (Cuerpo Humano)
+                // F) Libro Así Soy Yo (Cuerpo Humano)
                 if (t.includes('asi soy') || t.includes('así soy') || t.includes('cuerpo humano')) {
-                    let price = extractItemPrice('(?:asi soy|así soy|cuerpo humano)', 25000);
+                    let price = extractItemPrice('(?:asi soy|así soy|cuerpo humano)', 0);
                     items.push({ name: 'Libro Físico Así Soy Yo (Cuerpo Humano & Exploración Didáctica)', qty: 1, price: price });
                 }
             }
@@ -1445,7 +1479,7 @@
                             <span>PRECIO ($)</span>
                             <span class="text-[8px] bg-amber-100 text-amber-800 px-1 rounded font-normal">libre</span>
                         </label>
-                        <input type="number" step="500" value="${item.price}" placeholder="0" oninput="updateItemPrice(${index}, this.value)" class="w-full bg-white border border-amber-300 rounded px-1.5 py-1 text-right font-mono font-bold text-slate-900 focus:ring-2 focus:ring-amber-500">
+                        <input type="number" step="500" value="${item.price === 0 ? '' : item.price}" placeholder="0" oninput="updateItemPrice(${index}, this.value)" class="w-full bg-white border border-amber-300 rounded px-1.5 py-1 text-right font-mono font-bold text-slate-900 focus:ring-2 focus:ring-amber-500">
                     </div>
                     <div class="pt-3">
                         <button type="button" onclick="removeItem(${index})" title="Eliminar ítem" class="text-rose-500 hover:text-rose-700 p-1 cursor-pointer">
