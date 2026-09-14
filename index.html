@@ -97,13 +97,14 @@
         /* Animación de Pulso de Micrófono Grabando */
         @keyframes pulse-ring {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+            70% { transform: scale(1); box-shadow: 0 0 0 14px rgba(239, 68, 68, 0); }
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
         .mic-recording {
-            animation: pulse-ring 1.5s infinite;
+            animation: pulse-ring 1.5s infinite !important;
             background-color: #ef4444 !important;
             color: white !important;
+            border-color: #b91c1c !important;
         }
     </style>
 </head>
@@ -126,25 +127,25 @@
             <!-- Botones de Acción Rápida -->
             <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 <!-- BOTÓN PRINCIPAL DE DICTADO POR VOZ INTELIGENTE -->
-                <button onclick="openVoiceAssistantModal()" class="px-3 py-1.5 rounded-md text-xs font-bold bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white transition flex items-center gap-1.5 shadow-md transform active:scale-95">
+                <button type="button" onclick="openVoiceAssistantModal()" class="px-3 py-1.5 rounded-md text-xs font-bold bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white transition flex items-center gap-1.5 shadow-md transform active:scale-95 cursor-pointer">
                     <i class="fa-solid fa-microphone-lines animate-pulse text-amber-200"></i> <span>Dictado por Voz</span>
                 </button>
-                <button onclick="toggleViewMode()" id="btn-toggle-view" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-slate-700 hover:bg-slate-600 text-white transition flex items-center gap-1.5 shadow">
+                <button type="button" onclick="toggleViewMode()" id="btn-toggle-view" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-slate-700 hover:bg-slate-600 text-white transition flex items-center gap-1.5 shadow cursor-pointer">
                     <i class="fa-solid fa-eye"></i> <span>Vista Previa</span>
                 </button>
-                <button onclick="window.print()" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition flex items-center gap-1.5 shadow">
+                <button type="button" onclick="window.print()" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition flex items-center gap-1.5 shadow cursor-pointer">
                     <i class="fa-solid fa-print"></i> <span>Imprimir</span>
                 </button>
-                <button onclick="exportToPDF()" id="btn-pdf" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1.5 shadow">
+                <button type="button" onclick="exportToPDF()" id="btn-pdf" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1.5 shadow cursor-pointer">
                     <i class="fa-solid fa-file-pdf"></i> <span>PDF</span>
                 </button>
-                <button onclick="openEmailModal()" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white transition flex items-center gap-1.5 shadow">
+                <button type="button" onclick="openEmailModal()" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white transition flex items-center gap-1.5 shadow cursor-pointer">
                     <i class="fa-solid fa-envelope"></i> <span>Email</span>
                 </button>
-                <button onclick="openWhatsAppModal()" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-green-600 hover:bg-green-500 text-white transition flex items-center gap-1.5 shadow">
+                <button type="button" onclick="openWhatsAppModal()" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-green-600 hover:bg-green-500 text-white transition flex items-center gap-1.5 shadow cursor-pointer">
                     <i class="fa-brands fa-whatsapp"></i> <span>WhatsApp</span>
                 </button>
-                <button onclick="openWebhookModal()" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-amber-600 hover:bg-amber-500 text-white transition flex items-center gap-1.5 shadow">
+                <button type="button" onclick="openWebhookModal()" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-amber-600 hover:bg-amber-500 text-white transition flex items-center gap-1.5 shadow cursor-pointer">
                     <i class="fa-solid fa-cloud-arrow-up"></i> <span>Guardar en BD (n8n)</span>
                 </button>
             </div>
@@ -169,7 +170,7 @@
                 </div>
             </div>
             <div class="flex gap-2 w-full md:w-auto">
-                <button onclick="openVoiceAssistantModal()" class="w-full md:w-auto px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-xs rounded-lg shadow transition flex items-center justify-center gap-2">
+                <button type="button" onclick="openVoiceAssistantModal()" class="w-full md:w-auto px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-xs rounded-lg shadow transition flex items-center justify-center gap-2 cursor-pointer">
                     <i class="fa-solid fa-microphone text-rose-700"></i> Iniciar Dictado por Voz
                 </button>
             </div>
@@ -181,10 +182,10 @@
         
         <!-- Pestañas móviles en vista móvil -->
         <div class="no-print lg:hidden mb-4 flex border-b border-slate-300 bg-white rounded-lg p-1 shadow-sm">
-            <button onclick="setTab('editor')" id="tab-btn-editor" class="flex-1 py-2 text-sm font-semibold rounded-md bg-brand-800 text-white text-center">
+            <button type="button" onclick="setTab('editor')" id="tab-btn-editor" class="flex-1 py-2 text-sm font-semibold rounded-md bg-brand-800 text-white text-center">
                 <i class="fa-solid fa-pen-to-square mr-1"></i> Formulario de Carga
             </button>
-            <button onclick="setTab('preview')" id="tab-btn-preview" class="flex-1 py-2 text-sm font-semibold rounded-md text-slate-600 hover:text-slate-900 text-center">
+            <button type="button" onclick="setTab('preview')" id="tab-btn-preview" class="flex-1 py-2 text-sm font-semibold rounded-md text-slate-600 hover:text-slate-900 text-center">
                 <i class="fa-solid fa-file-contract mr-1"></i> Documento Oficial
             </button>
         </div>
@@ -239,7 +240,7 @@
                         <div>
                             <div class="flex justify-between items-center mb-1">
                                 <label class="font-semibold text-slate-600">Nombre Completo y Apellido / Razón Social *</label>
-                                <button type="button" onclick="startFieldVoice('input-cliente-nombre', this)" title="Dictar por voz" class="text-slate-400 hover:text-rose-600 px-1.5 py-0.5 rounded text-xs transition">
+                                <button type="button" onclick="startFieldVoice('input-cliente-nombre', this)" title="Dictar por voz" class="text-slate-400 hover:text-rose-600 px-1.5 py-0.5 rounded text-xs transition cursor-pointer">
                                     <i class="fa-solid fa-microphone"></i>
                                 </button>
                             </div>
@@ -250,7 +251,7 @@
                             <div>
                                 <div class="flex justify-between items-center mb-1">
                                     <label class="font-semibold text-slate-600">D.N.I. / C.U.I.T. *</label>
-                                    <button type="button" onclick="startFieldVoice('input-cliente-dni', this)" title="Dictar DNI" class="text-slate-400 hover:text-rose-600 px-1.5 py-0.5 rounded text-xs transition">
+                                    <button type="button" onclick="startFieldVoice('input-cliente-dni', this)" title="Dictar DNI" class="text-slate-400 hover:text-rose-600 px-1.5 py-0.5 rounded text-xs transition cursor-pointer">
                                         <i class="fa-solid fa-microphone"></i>
                                     </button>
                                 </div>
@@ -259,7 +260,7 @@
                             <div>
                                 <div class="flex justify-between items-center mb-1">
                                     <label class="font-semibold text-slate-600">Cargo / Función</label>
-                                    <button type="button" onclick="startFieldVoice('input-cliente-cargo', this)" title="Dictar cargo" class="text-slate-400 hover:text-rose-600 px-1.5 py-0.5 rounded text-xs transition">
+                                    <button type="button" onclick="startFieldVoice('input-cliente-cargo', this)" title="Dictar cargo" class="text-slate-400 hover:text-rose-600 px-1.5 py-0.5 rounded text-xs transition cursor-pointer">
                                         <i class="fa-solid fa-microphone"></i>
                                     </button>
                                 </div>
@@ -270,7 +271,7 @@
                         <div>
                             <div class="flex justify-between items-center mb-1">
                                 <label class="font-semibold text-slate-600">Establecimiento Educativo / Escuela *</label>
-                                <button type="button" onclick="startFieldVoice('input-cliente-escuela', this)" title="Dictar escuela" class="text-slate-400 hover:text-rose-600 px-1.5 py-0.5 rounded text-xs transition">
+                                <button type="button" onclick="startFieldVoice('input-cliente-escuela', this)" title="Dictar escuela" class="text-slate-400 hover:text-rose-600 px-1.5 py-0.5 rounded text-xs transition cursor-pointer">
                                     <i class="fa-solid fa-microphone"></i>
                                 </button>
                             </div>
@@ -280,7 +281,7 @@
                         <div>
                             <div class="flex justify-between items-center mb-1">
                                 <label class="font-semibold text-slate-600">Domicilio Particular / Legal Constituido *</label>
-                                <button type="button" onclick="startFieldVoice('input-cliente-domicilio', this)" title="Dictar domicilio" class="text-slate-400 hover:text-rose-600 px-1.5 py-0.5 rounded text-xs transition">
+                                <button type="button" onclick="startFieldVoice('input-cliente-domicilio', this)" title="Dictar domicilio" class="text-slate-400 hover:text-rose-600 px-1.5 py-0.5 rounded text-xs transition cursor-pointer">
                                     <i class="fa-solid fa-microphone"></i>
                                 </button>
                             </div>
@@ -291,7 +292,7 @@
                             <div>
                                 <div class="flex justify-between items-center mb-1">
                                     <label class="font-semibold text-slate-600">WhatsApp / Celular *</label>
-                                    <button type="button" onclick="startFieldVoice('input-cliente-tel', this)" title="Dictar teléfono" class="text-slate-400 hover:text-rose-600 px-1.5 py-0.5 rounded text-xs transition">
+                                    <button type="button" onclick="startFieldVoice('input-cliente-tel', this)" title="Dictar teléfono" class="text-slate-400 hover:text-rose-600 px-1.5 py-0.5 rounded text-xs transition cursor-pointer">
                                         <i class="fa-solid fa-microphone"></i>
                                     </button>
                                 </div>
@@ -302,7 +303,7 @@
                                     <label class="font-semibold text-brand-800 flex items-center gap-1">
                                         <i class="fa-solid fa-envelope text-amber-500"></i> Correo Electrónico *
                                     </label>
-                                    <button type="button" onclick="startFieldVoice('input-cliente-email', this)" title="Dictar Email" class="text-slate-400 hover:text-rose-600 px-1.5 py-0.5 rounded text-xs transition">
+                                    <button type="button" onclick="startFieldVoice('input-cliente-email', this)" title="Dictar Email" class="text-slate-400 hover:text-rose-600 px-1.5 py-0.5 rounded text-xs transition cursor-pointer">
                                         <i class="fa-solid fa-microphone"></i>
                                     </button>
                                 </div>
@@ -322,7 +323,7 @@
                             <p class="text-[10px] text-slate-500">Precios libres y editables en el momento del acuerdo</p>
                         </div>
                         <div class="flex gap-1.5">
-                            <button onclick="addBlankItem()" class="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2 py-1 rounded border border-slate-300 flex items-center gap-1 transition">
+                            <button type="button" onclick="addBlankItem()" class="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2 py-1 rounded border border-slate-300 flex items-center gap-1 transition cursor-pointer">
                                 <i class="fa-solid fa-plus"></i> Ítem en Blanco
                             </button>
                         </div>
@@ -338,13 +339,13 @@
                         <div>
                             <span class="text-[9px] font-bold text-slate-400 uppercase block mb-1">Rotacuentos Gigantes (Físicos):</span>
                             <div class="flex flex-wrap gap-1.5">
-                                <button onclick="addPreset('Rotacuento Rojo (Físico - Efemérides Patrias & Grandes Héroes)', 85000)" class="text-[10.5px] bg-rose-50 hover:bg-rose-100 text-rose-900 border border-rose-200 px-2 py-0.5 rounded transition font-medium">
+                                <button type="button" onclick="addPreset('Rotacuento Rojo (Físico - Efemérides Patrias & Grandes Héroes)', 85000)" class="text-[10.5px] bg-rose-50 hover:bg-rose-100 text-rose-900 border border-rose-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     📕 Rotacuento Rojo (Físico)
                                 </button>
-                                <button onclick="addPreset('Rotacuento Verde (Físico - Cuentos de la Naturaleza y Ecología)', 85000)" class="text-[10.5px] bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 px-2 py-0.5 rounded transition font-medium">
+                                <button type="button" onclick="addPreset('Rotacuento Verde (Físico - Cuentos de la Naturaleza y Ecología)', 85000)" class="text-[10.5px] bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     📗 Rotacuento Verde (Físico)
                                 </button>
-                                <button onclick="addPreset('Kit Dúo Rotacuentos Físicos (Rojo + Verde Completo)', 155000)" class="text-[10.5px] bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 px-2 py-0.5 rounded transition font-medium">
+                                <button type="button" onclick="addPreset('Kit Dúo Rotacuentos Físicos (Rojo + Verde Completo)', 155000)" class="text-[10.5px] bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     📚 Kit Dúo Físicos (Rojo + Verde)
                                 </button>
                             </div>
@@ -354,13 +355,13 @@
                         <div>
                             <span class="text-[9px] font-bold text-slate-400 uppercase block mb-1">Combos Físico + Digital:</span>
                             <div class="flex flex-wrap gap-1.5">
-                                <button onclick="addPreset('Rotacuento Rojo (Físico + Licencia Digital Interactiva)', 95000)" class="text-[10.5px] bg-purple-50 hover:bg-purple-100 text-purple-900 border border-purple-200 px-2 py-0.5 rounded transition font-medium">
+                                <button type="button" onclick="addPreset('Rotacuento Rojo (Físico + Licencia Digital Interactiva)', 95000)" class="text-[10.5px] bg-purple-50 hover:bg-purple-100 text-purple-900 border border-purple-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     📲 Rojo Físico + Digital
                                 </button>
-                                <button onclick="addPreset('Rotacuento Verde (Físico + Licencia Digital Interactiva)', 95000)" class="text-[10.5px] bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 px-2 py-0.5 rounded transition font-medium">
+                                <button type="button" onclick="addPreset('Rotacuento Verde (Físico + Licencia Digital Interactiva)', 95000)" class="text-[10.5px] bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     📲 Verde Físico + Digital
                                 </button>
-                                <button onclick="addPreset('Megapack Rotacuentos Dúo (Rojo + Verde Físico y Digital)', 175000)" class="text-[10.5px] bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200 px-2 py-0.5 rounded transition font-medium">
+                                <button type="button" onclick="addPreset('Megapack Rotacuentos Dúo (Rojo + Verde Físico y Digital)', 175000)" class="text-[10.5px] bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     🌟 Megapack Dúo (Físico + Digital)
                                 </button>
                             </div>
@@ -370,13 +371,13 @@
                         <div>
                             <span class="text-[9px] font-bold text-slate-400 uppercase block mb-1">Láminas, Libritos y Colecciones:</span>
                             <div class="flex flex-wrap gap-1.5">
-                                <button onclick="addPreset('Megapack de Láminas Gigantes para Actos Escolares', 45000)" class="text-[10.5px] bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 px-2 py-0.5 rounded transition font-medium">
+                                <button type="button" onclick="addPreset('Megapack de Láminas Gigantes para Actos Escolares', 45000)" class="text-[10.5px] bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     🎨 Megapack Láminas Gigantes
                                 </button>
-                                <button onclick="addPreset('Libro Físico "Así Soy Yo" (Cuerpo Humano & Exploración Didáctica)', 25000)" class="text-[10.5px] bg-orange-50 hover:bg-orange-100 text-orange-900 border border-orange-200 px-2 py-0.5 rounded transition font-medium">
-                                    🧒 Libro "Así Soy Yo" (Cuerpo Humano)
+                                <button type="button" onclick="addPreset('Libro Físico Así Soy Yo (Cuerpo Humano & Exploración Didáctica)', 25000)" class="text-[10.5px] bg-orange-50 hover:bg-orange-100 text-orange-900 border border-orange-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
+                                    🧒 Libro Así Soy Yo (Cuerpo Humano)
                                 </button>
-                                <button onclick="addPreset('Megapack Total Arandumí (Rotacuentos Dúo Físico/Digital + Láminas + Así Soy Yo)', 220000)" class="text-[10.5px] bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 px-2 py-0.5 rounded transition font-bold">
+                                <button type="button" onclick="addPreset('Megapack Total Arandumí (Rotacuentos Dúo Físico/Digital + Láminas + Así Soy Yo)', 220000)" class="text-[10.5px] bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 px-2 py-0.5 rounded transition font-bold cursor-pointer">
                                     👑 Megapack Total Arandumí
                                 </button>
                             </div>
@@ -489,10 +490,10 @@
                     </div>
 
                     <div class="mt-2.5 flex justify-between items-center">
-                        <button onclick="clearSignature()" class="text-xs px-2.5 py-1.5 rounded bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-600 border border-slate-300 transition flex items-center gap-1">
+                        <button type="button" onclick="clearSignature()" class="text-xs px-2.5 py-1.5 rounded bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-600 border border-slate-300 transition flex items-center gap-1 cursor-pointer">
                             <i class="fa-solid fa-eraser"></i> Limpiar firma
                         </button>
-                        <button onclick="applySignature()" class="text-xs px-3 py-1.5 rounded bg-brand-700 hover:bg-brand-600 text-white font-semibold shadow transition flex items-center gap-1 active:scale-95">
+                        <button type="button" onclick="applySignature()" class="text-xs px-3 py-1.5 rounded bg-brand-700 hover:bg-brand-600 text-white font-semibold shadow transition flex items-center gap-1 active:scale-95 cursor-pointer">
                             <i class="fa-solid fa-check"></i> Estampar en Documento
                         </button>
                     </div>
@@ -739,33 +740,29 @@
                         <p class="text-[10px] sm:text-[11px] text-slate-500">Reconocimiento por voz o dictado con tu teclado móvil</p>
                     </div>
                 </div>
-                <button onclick="closeVoiceAssistantModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
-            </div>
-
-            <!-- Aviso de Contexto de Seguridad -->
-            <div id="voice-env-notice" class="hidden mb-3 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-[11px] text-amber-800 flex items-start gap-2">
-                <i class="fa-solid fa-triangle-exclamation text-amber-600 mt-0.5"></i>
-                <div class="flex-1">
-                    <strong>Aviso Celular:</strong> Si estás abriendo el archivo local sin HTTPS, Android puede restringir el micro directo del navegador. 
-                    <span class="block mt-0.5 font-semibold text-brand-900">💡 Solución: Usá el microfonito 🎙️ de tu teclado (Gboard) en el recuadro, o accedé desde la URL online de GitHub Pages con HTTPS.</span>
-                </div>
+                <button type="button" onclick="closeVoiceAssistantModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold cursor-pointer">&times;</button>
             </div>
 
             <!-- Caja de Estado y Transcripción en Vivo / Editable -->
-            <div class="bg-slate-50 rounded-xl border border-slate-200 p-3 mb-3">
+            <div class="bg-slate-50 rounded-xl border border-slate-200 p-3.5 mb-3">
                 <div class="flex items-center justify-between mb-2 gap-2">
-                    <span id="voice-status-badge" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700 flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-slate-400"></span> En espera
+                    <span id="voice-status-badge" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-200 text-slate-700 flex items-center gap-1.5 transition">
+                        <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Listo para grabar
                     </span>
                     <div class="flex gap-1.5">
-                        <button id="btn-toggle-main-voice" onclick="toggleMainVoiceRecording()" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition flex items-center gap-1.5 shadow active:scale-95">
+                        <button type="button" id="btn-toggle-main-voice" onclick="toggleMainVoiceRecording()" class="px-4 py-2 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition flex items-center gap-2 shadow-md active:scale-95 cursor-pointer">
                             <i class="fa-solid fa-microphone"></i> <span>Presionar para Hablar</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Textarea interactivo editable -->
-                <textarea id="voice-transcript-input" rows="3" oninput="parseVoiceTranscript(this.value)" placeholder="Habla con el botón rojo o toca aquí y usa el microfonito 🎙️ de tu teclado móvil. Ej: 'Cliente Jorge Fernández DNI 28345678 Escuela 3 del Centenario maestro de primer grado celular 379 4898989 correo jorge@gmail.com lleva Rotacuento Rojo físico y digital por 95000 y el librito así soy yo por 25 mil anticipo 20000 en 3 cuotas'..." class="w-full bg-white p-2.5 rounded-lg border border-slate-300 text-xs text-slate-800 leading-relaxed font-sans focus:ring-2 focus:ring-rose-500 focus:outline-none"></textarea>
+                <textarea id="voice-transcript-input" rows="3" oninput="parseVoiceTranscript(this.value)" placeholder="Toca el botón rojo para hablar, o toca aquí y usa el microfonito 🎙️ de tu teclado. Ej: 'Cliente Jorge Fernández DNI 28345678 Escuela 3 del Centenario maestro de primer grado celular 379 4898989 correo jorge@gmail.com lleva Rotacuento Rojo por 85000 y el librito Así Soy Yo por 25 mil anticipo 20000 en 3 cuotas'..." class="w-full bg-white p-2.5 rounded-lg border border-slate-300 text-xs text-slate-800 leading-relaxed font-sans focus:ring-2 focus:ring-rose-500 focus:outline-none"></textarea>
+                
+                <div class="mt-2 text-[10px] text-slate-500 flex items-center justify-between">
+                    <span>💡 <em>Podés dictar todo de corrido o corregir el texto con tu teclado.</em></span>
+                    <button type="button" onclick="clearVoiceTranscript()" class="text-rose-600 hover:underline font-semibold cursor-pointer">Borrar texto</button>
+                </div>
             </div>
 
             <!-- Tarjetas de Campos Detectados Automáticamente -->
@@ -806,10 +803,10 @@
             </div>
 
             <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
-                <button onclick="clearVoiceTranscript()" class="py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition">
-                    Limpiar
+                <button type="button" onclick="closeVoiceAssistantModal()" class="py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition cursor-pointer">
+                    Cancelar
                 </button>
-                <button onclick="applyVoiceDataToForm()" class="py-2 px-4 bg-brand-800 hover:bg-brand-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow active:scale-95">
+                <button type="button" onclick="applyVoiceDataToForm()" class="py-2 px-4 bg-brand-800 hover:bg-brand-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow active:scale-95 cursor-pointer">
                     <i class="fa-solid fa-check-double"></i> Volcar al Formulario Oficial
                 </button>
             </div>
@@ -824,7 +821,7 @@
                     <i class="fa-solid fa-envelope-open-text text-2xl"></i>
                     <h3 class="text-lg font-bold">Enviar Copia por Correo al Cliente</h3>
                 </div>
-                <button onclick="closeEmailModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                <button type="button" onclick="closeEmailModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold cursor-pointer">&times;</button>
             </div>
 
             <p class="text-xs text-slate-600 mb-3">
@@ -848,10 +845,10 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-2 pt-2 border-t border-slate-200">
-                    <button onclick="copyEmailBody()" class="flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                    <button type="button" onclick="copyEmailBody()" class="flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer">
                         <i class="fa-regular fa-copy"></i> Copiar Texto
                     </button>
-                    <button onclick="sendDirectEmailClient()" class="flex-1 py-2 px-3 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow">
+                    <button type="button" onclick="sendDirectEmailClient()" class="flex-1 py-2 px-3 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow cursor-pointer">
                         <i class="fa-solid fa-paper-plane"></i> Abrir Mi App de Correo (Gmail)
                     </button>
                 </div>
@@ -867,7 +864,7 @@
                     <i class="fa-brands fa-whatsapp text-2xl"></i>
                     <h3 class="text-lg font-bold">Enviar por WhatsApp o Automatizar</h3>
                 </div>
-                <button onclick="closeWhatsAppModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                <button type="button" onclick="closeWhatsAppModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold cursor-pointer">&times;</button>
             </div>
 
             <p class="text-xs text-slate-600 mb-3">
@@ -881,10 +878,10 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-2">
-                    <button onclick="copyWhatsAppMessage()" class="flex-1 py-2 px-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                    <button type="button" onclick="copyWhatsAppMessage()" class="flex-1 py-2 px-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer">
                         <i class="fa-regular fa-copy"></i> Copiar Texto
                     </button>
-                    <button onclick="sendDirectWhatsApp()" class="flex-1 py-2 px-3 bg-green-600 hover:bg-green-500 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow">
+                    <button type="button" onclick="sendDirectWhatsApp()" class="flex-1 py-2 px-3 bg-green-600 hover:bg-green-500 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow cursor-pointer">
                         <i class="fa-brands fa-whatsapp"></i> Abrir Chat Directo
                     </button>
                 </div>
@@ -893,7 +890,7 @@
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Enlace con datos prellenados (Para n8n / Bot):</label>
                     <div class="flex gap-2">
                         <input type="text" id="prefill-url-input" readonly class="flex-1 text-[11px] font-mono bg-slate-100 border border-slate-300 rounded px-2.5 py-1.5 text-slate-700">
-                        <button onclick="copyPrefillUrl()" class="px-3 py-1.5 bg-brand-700 hover:bg-brand-600 text-white text-xs font-semibold rounded">
+                        <button type="button" onclick="copyPrefillUrl()" class="px-3 py-1.5 bg-brand-700 hover:bg-brand-600 text-white text-xs font-semibold rounded cursor-pointer">
                             Copiar URL
                         </button>
                     </div>
@@ -910,7 +907,7 @@
                     <i class="fa-solid fa-database text-xl"></i>
                     <h3 class="text-lg font-bold text-slate-900">Guardar en Base de Datos & Despacho Automático</h3>
                 </div>
-                <button onclick="closeWebhookModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                <button type="button" onclick="closeWebhookModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold cursor-pointer">&times;</button>
             </div>
 
             <p class="text-xs text-slate-600 mb-3">
@@ -929,10 +926,10 @@
                 </div>
 
                 <div class="flex justify-end gap-2 pt-2">
-                    <button onclick="copyJSONPayload()" class="py-2 px-3 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
+                    <button type="button" onclick="copyJSONPayload()" class="py-2 px-3 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer">
                         <i class="fa-regular fa-copy"></i> Copiar JSON
                     </button>
-                    <button onclick="triggerWebhook()" id="btn-trigger-webhook" class="py-2 px-4 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow">
+                    <button type="button" onclick="triggerWebhook()" id="btn-trigger-webhook" class="py-2 px-4 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow cursor-pointer">
                         <i class="fa-solid fa-cloud-arrow-up"></i> Guardar en BD con n8n
                     </button>
                 </div>
@@ -950,7 +947,7 @@
     <script>
         // ESTADO GLOBAL CON PRODUCTO INICIAL EDITABLE
         let orderItems = [
-            { id: 1, name: "Rotacuento Rojo (Físico - Efemérides Patrias & Grandes Héroes)", qty: 1, price: 85000 }
+            { id: 1, name: 'Rotacuento Rojo (Físico - Efemérides Patrias & Grandes Héroes)', qty: 1, price: 85000 }
         ];
 
         let signatureDataUrl = null;
@@ -958,10 +955,8 @@
         let canvas, ctx;
 
         // ESTADO DE RECONOCIMIENTO DE VOZ (SPEECH RECOGNITION)
-        let recognition = null;
+        let mainRecognition = null;
         let isMainRecording = false;
-        let currentFieldTarget = null;
-        let currentFieldBtn = null;
         let fieldRecognition = null;
         let detectedEntities = {};
 
@@ -969,21 +964,11 @@
         window.addEventListener('DOMContentLoaded', () => {
             initDates();
             initSignaturePad();
-            initSpeechRecognition();
-            checkSecurityContext();
             loadUrlParameters();
             renderItemsList();
             calculateFinancing();
             updateDocument();
         });
-
-        function checkSecurityContext() {
-            const proto = window.location.protocol;
-            if (proto === 'content:' || proto === 'file:') {
-                const notice = document.getElementById('voice-env-notice');
-                if (notice) notice.classList.remove('hidden');
-            }
-        }
 
         // 1. FECHAS POR DEFECTO
         function initDates() {
@@ -1005,26 +990,83 @@
             }
         }
 
-        // 2. RECONOCIMIENTO DE VOZ
-        function initSpeechRecognition() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                console.warn("Speech Recognition API no disponible directamente");
+        // 2. RECONOCIMIENTO DE VOZ ROBUSTO (INICIALIZACIÓN BAJO DEMANDA POR CLIC)
+        function getSpeechRecognitionClass() {
+            return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+        }
+
+        function updateVoiceStatusUI(active) {
+            const badge = document.getElementById('voice-status-badge');
+            const btn = document.getElementById('btn-toggle-main-voice');
+            if (active) {
+                if (badge) {
+                    badge.className = "text-[11px] font-semibold px-3 py-1 rounded-full bg-rose-100 text-rose-700 flex items-center gap-1.5 animate-pulse border border-rose-300";
+                    badge.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-rose-600 animate-ping"></span> 🎙️ Escuchando... ¡Habla ahora!';
+                }
+                if (btn) {
+                    btn.className = "px-4 py-2 rounded-lg text-xs font-bold bg-slate-800 text-white transition flex items-center gap-2 shadow-lg mic-recording cursor-pointer";
+                    btn.innerHTML = '<i class="fa-solid fa-stop"></i> <span>Pausar Micrófono</span>';
+                }
+            } else {
+                if (badge) {
+                    badge.className = "text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-200 text-slate-700 flex items-center gap-1.5";
+                    badge.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Listo para grabar';
+                }
+                if (btn) {
+                    btn.className = "px-4 py-2 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition flex items-center gap-2 shadow-md active:scale-95 cursor-pointer";
+                    btn.innerHTML = '<i class="fa-solid fa-microphone"></i> <span>Presionar para Hablar</span>';
+                }
+            }
+        }
+
+        function openVoiceAssistantModal() {
+            const modal = document.getElementById('modal-voice-assistant');
+            modal.classList.remove('hidden');
+            // Pedir foco para facilitar dictado inmediato
+            setTimeout(() => {
+                const textarea = document.getElementById('voice-transcript-input');
+                if (textarea) textarea.focus();
+            }, 200);
+        }
+
+        function closeVoiceAssistantModal() {
+            stopMainVoice();
+            document.getElementById('modal-voice-assistant').classList.add('hidden');
+        }
+
+        function toggleMainVoiceRecording() {
+            if (isMainRecording) {
+                stopMainVoice();
+            } else {
+                startMainVoice();
+            }
+        }
+
+        function startMainVoice() {
+            const SpeechClass = getSpeechRecognitionClass();
+            if (!SpeechClass) {
+                showToast("Tu navegador no soporta micrófono directo. Toca la casilla y usa el microfonito 🎙️ de tu teclado.", "warning");
+                document.getElementById('voice-transcript-input').focus();
                 return;
             }
 
             try {
-                recognition = new SpeechRecognition();
-                recognition.lang = 'es-AR';
-                recognition.continuous = true;
-                recognition.interimResults = true;
+                if (mainRecognition) {
+                    try { mainRecognition.abort(); } catch(e){}
+                }
 
-                recognition.onstart = () => {
+                mainRecognition = new SpeechClass();
+                mainRecognition.lang = 'es-AR';
+                mainRecognition.continuous = true;
+                mainRecognition.interimResults = true;
+
+                mainRecognition.onstart = () => {
                     isMainRecording = true;
                     updateVoiceStatusUI(true);
+                    showToast("🎙️ Micrófono activado. Habla con confianza...");
                 };
 
-                recognition.onresult = (event) => {
+                mainRecognition.onresult = (event) => {
                     let fullTranscript = '';
                     for (let i = 0; i < event.results.length; ++i) {
                         fullTranscript += event.results[i][0].transcript + ' ';
@@ -1037,78 +1079,38 @@
                     parseVoiceTranscript(fullTranscript);
                 };
 
-                recognition.onerror = (event) => {
-                    console.error('Speech recognition error', event.error);
+                mainRecognition.onerror = (event) => {
+                    console.error('Speech recognition error:', event.error);
+                    isMainRecording = false;
+                    updateVoiceStatusUI(false);
+                    if (event.error === 'not-allowed') {
+                        showToast("Permiso de micrófono bloqueado. Podés habilitarlo arriba o usar el microfonito de tu teclado 🎙️", "warning");
+                    } else if (event.error === 'no-speech') {
+                        showToast("No se detectó voz. Vuelve a presionar para hablar.", "warning");
+                    }
+                };
+
+                mainRecognition.onend = () => {
                     isMainRecording = false;
                     updateVoiceStatusUI(false);
                 };
 
-                recognition.onend = () => {
-                    isMainRecording = false;
-                    updateVoiceStatusUI(false);
-                };
-            } catch (err) {
-                console.warn("No se pudo instanciar SpeechRecognition:", err);
-            }
-        }
-
-        function updateVoiceStatusUI(active) {
-            const badge = document.getElementById('voice-status-badge');
-            const btn = document.getElementById('btn-toggle-main-voice');
-            if (active) {
-                if (badge) {
-                    badge.className = "text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 flex items-center gap-1.5 animate-pulse";
-                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-600 animate-ping"></span> Grabando en vivo...`;
-                }
-                if (btn) {
-                    btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white transition flex items-center gap-1.5 shadow mic-recording";
-                    btn.innerHTML = `<i class="fa-solid fa-stop"></i> <span>Pausar</span>`;
-                }
-            } else {
-                if (badge) {
-                    badge.className = "text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700 flex items-center gap-1.5";
-                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-400"></span> En espera`;
-                }
-                if (btn) {
-                    btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition flex items-center gap-1.5 shadow";
-                    btn.innerHTML = `<i class="fa-solid fa-microphone"></i> <span>Presionar para Hablar</span>`;
-                }
-            }
-        }
-
-        function openVoiceAssistantModal() {
-            document.getElementById('modal-voice-assistant').classList.remove('hidden');
-            checkSecurityContext();
-            if (recognition && !isMainRecording) {
-                try { 
-                    recognition.start(); 
-                } catch(e){}
-            }
-        }
-
-        function closeVoiceAssistantModal() {
-            if (recognition && isMainRecording) {
-                try { recognition.stop(); } catch(e){}
-            }
-            document.getElementById('modal-voice-assistant').classList.add('hidden');
-        }
-
-        function toggleMainVoiceRecording() {
-            if (!recognition) {
-                showToast("Usa el microfonito de tu teclado de celular (Gboard) en el recuadro", "warning");
+                mainRecognition.start();
+            } catch(err) {
+                console.error("Error al iniciar SpeechRecognition:", err);
+                isMainRecording = false;
+                updateVoiceStatusUI(false);
+                showToast("Toca el texto y usa el microfonito 🎙️ de tu teclado Gboard / Android", "warning");
                 document.getElementById('voice-transcript-input').focus();
-                return;
             }
-            if (isMainRecording) {
-                try { recognition.stop(); } catch(e){}
-            } else {
-                try { 
-                    recognition.start(); 
-                } catch(e){
-                    showToast("Toca el texto y usa el micrófono de tu teclado Gboard", "warning");
-                    document.getElementById('voice-transcript-input').focus();
-                }
+        }
+
+        function stopMainVoice() {
+            if (mainRecognition && isMainRecording) {
+                try { mainRecognition.stop(); } catch(e){}
             }
+            isMainRecording = false;
+            updateVoiceStatusUI(false);
         }
 
         function clearVoiceTranscript() {
@@ -1266,7 +1268,6 @@
             // 10. EXTRAER PRODUCTOS Y PRECIOS HABLADOS (TODOS LOS PRODUCTOS)
             let items = [];
 
-            // Helper para extraer precio asociado al producto
             function extractItemPrice(phraseRegex, defaultPrice) {
                 const pMatch = t.match(new RegExp(phraseRegex + '[^0-9]*?(\d+[\.\d]*)\s*(?:mil|pesos|\$)?', 'i'));
                 if (pMatch) {
@@ -1279,36 +1280,36 @@
             // A) Megapack Total
             if (t.includes('megapack total') || t.includes('pack total') || (t.includes('megapack') && t.includes('completo'))) {
                 let price = extractItemPrice('(?:megapack total|pack total|megapack completo)', 220000);
-                items.push({ name: "Megapack Total Arandumí (Rotacuentos Dúo Físico/Digital + Láminas + Así Soy Yo)", qty: 1, price: price });
+                items.push({ name: 'Megapack Total Arandumí (Rotacuentos Dúo Físico/Digital + Láminas + Así Soy Yo)', qty: 1, price: price });
             } else {
                 // B) Megapack Dúo Rotacuentos Físico y Digital
                 if (t.includes('megapack duo') || t.includes('megapack dúo') || (t.includes('duo') && t.includes('digital')) || (t.includes('dúo') && t.includes('digital'))) {
                     let price = extractItemPrice('(?:megapack d[uú]o|d[uú]o.*digital)', 175000);
-                    items.push({ name: "Megapack Rotacuentos Dúo (Rojo + Verde Físico y Digital)", qty: 1, price: price });
+                    items.push({ name: 'Megapack Rotacuentos Dúo (Rojo + Verde Físico y Digital)', qty: 1, price: price });
                 }
                 // C) Kit Dúo Rotacuentos Físicos
                 else if (t.includes('combo duo') || t.includes('combo dúo') || t.includes('kit duo') || t.includes('kit dúo') || t.includes('ambos rotacuentos')) {
                     let price = extractItemPrice('(?:combo|kit)?\s*d[uú]o', 155000);
-                    items.push({ name: "Kit Dúo Rotacuentos Físicos (Rojo + Verde Completo)", qty: 1, price: price });
+                    items.push({ name: 'Kit Dúo Rotacuentos Físicos (Rojo + Verde Completo)', qty: 1, price: price });
                 } else {
                     // D) Rotacuento Rojo (Físico vs Físico + Digital)
                     if (t.includes('rojo')) {
                         if (t.includes('rojo digital') || (t.includes('rojo') && t.includes('digital'))) {
                             let price = extractItemPrice('(?:rojo.*digital|digital.*rojo)', 95000);
-                            items.push({ name: "Rotacuento Rojo (Físico + Licencia Digital Interactiva)", qty: 1, price: price });
+                            items.push({ name: 'Rotacuento Rojo (Físico + Licencia Digital Interactiva)', qty: 1, price: price });
                         } else {
                             let price = extractItemPrice('(?:rojo|rotacuento rojo|efemerides)', 85000);
-                            items.push({ name: "Rotacuento Rojo (Físico - Efemérides Patrias & Grandes Héroes)", qty: 1, price: price });
+                            items.push({ name: 'Rotacuento Rojo (Físico - Efemérides Patrias & Grandes Héroes)', qty: 1, price: price });
                         }
                     }
                     // E) Rotacuento Verde (Físico vs Físico + Digital)
                     if (t.includes('verde')) {
                         if (t.includes('verde digital') || (t.includes('verde') && t.includes('digital'))) {
                             let price = extractItemPrice('(?:verde.*digital|digital.*verde)', 95000);
-                            items.push({ name: "Rotacuento Verde (Físico + Licencia Digital Interactiva)", qty: 1, price: price });
+                            items.push({ name: 'Rotacuento Verde (Físico + Licencia Digital Interactiva)', qty: 1, price: price });
                         } else {
                             let price = extractItemPrice('(?:verde|rotacuento verde|ecologia)', 85000);
-                            items.push({ name: "Rotacuento Verde (Físico - Cuentos de la Naturaleza y Ecología)", qty: 1, price: price });
+                            items.push({ name: 'Rotacuento Verde (Físico - Cuentos de la Naturaleza y Ecología)', qty: 1, price: price });
                         }
                     }
                 }
@@ -1316,13 +1317,13 @@
                 // F) Megapack / Kit Láminas
                 if (t.includes('lamina') || t.includes('lámina') || t.includes('pack de laminas') || t.includes('pack de láminas')) {
                     let price = extractItemPrice('(?:lamina|lámina|laminas|láminas)', 45000);
-                    items.push({ name: "Megapack de Láminas Gigantes para Actos Escolares", qty: 1, price: price });
+                    items.push({ name: 'Megapack de Láminas Gigantes para Actos Escolares', qty: 1, price: price });
                 }
 
                 // G) Libro Así Soy Yo (Cuerpo Humano)
                 if (t.includes('asi soy') || t.includes('así soy') || t.includes('cuerpo humano')) {
                     let price = extractItemPrice('(?:asi soy|así soy|cuerpo humano)', 25000);
-                    items.push({ name: "Libro Físico "Así Soy Yo" (Cuerpo Humano & Exploración Didáctica)", qty: 1, price: price });
+                    items.push({ name: 'Libro Físico Así Soy Yo (Cuerpo Humano & Exploración Didáctica)', qty: 1, price: price });
                 }
             }
 
@@ -1367,10 +1368,10 @@
 
         // MICRÓFONO INDIVIDUAL POR CAMPO
         function startFieldVoice(fieldId, btnElem) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const SpeechClass = getSpeechRecognitionClass();
             const inputElem = document.getElementById(fieldId);
 
-            if (!SpeechRecognition) {
+            if (!SpeechClass) {
                 showToast("Toca la casilla y usa el micrófono 🎙️ de tu teclado de celular", "warning");
                 inputElem.focus();
                 return;
@@ -1381,7 +1382,7 @@
             }
 
             try {
-                fieldRecognition = new SpeechRecognition();
+                fieldRecognition = new SpeechClass();
                 fieldRecognition.lang = 'es-AR';
                 fieldRecognition.continuous = false;
                 fieldRecognition.interimResults = false;
@@ -1401,7 +1402,7 @@
                         inputElem.value = capitalizeWords(text.trim());
                     }
                     updateDocument();
-                    showToast(`Campo actualizado`);
+                    showToast("Campo actualizado");
                 };
 
                 fieldRecognition.onend = () => {
@@ -1447,7 +1448,7 @@
                         <input type="number" step="500" value="${item.price}" placeholder="0" oninput="updateItemPrice(${index}, this.value)" class="w-full bg-white border border-amber-300 rounded px-1.5 py-1 text-right font-mono font-bold text-slate-900 focus:ring-2 focus:ring-amber-500">
                     </div>
                     <div class="pt-3">
-                        <button onclick="removeItem(${index})" title="Eliminar ítem" class="text-rose-500 hover:text-rose-700 p-1">
+                        <button type="button" onclick="removeItem(${index})" title="Eliminar ítem" class="text-rose-500 hover:text-rose-700 p-1 cursor-pointer">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
@@ -2033,7 +2034,7 @@ Corrientes, Argentina`;
             return {
                 metadata: {
                     sistema: "Arandumi Solicitud & Legal Tech",
-                    version: "2.1",
+                    version: "2.2",
                     timestamp: new Date().toISOString()
                 },
                 solicitud: {
@@ -2154,6 +2155,7 @@ Corrientes, Argentina`;
             }, 3500);
         }
 
+        // Algoritmo de Conversión a Letras en Español para Contratos y Pagarés
         function numeroALetras(num) {
             const enteros = Math.floor(num);
             const centavos = Math.round((num - enteros) * 100);
