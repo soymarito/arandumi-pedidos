@@ -431,14 +431,19 @@
                     <div class="space-y-3 text-xs">
                         <div class="grid grid-cols-2 gap-2.5">
                             <div>
-                                <label class="block font-semibold text-slate-600 mb-1">Anticipo / Entrega Inicial ($)</label>
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="font-semibold text-slate-600">Anticipo / Entrega ($)</label>
+                                    <button type="button" onclick="startAnticipoVoice(this)" title="Dictar anticipo por voz" class="text-slate-400 hover:text-rose-600 px-1 py-0.5 rounded text-xs transition cursor-pointer">
+                                        <i class="fa-solid fa-microphone"></i>
+                                    </button>
+                                </div>
                                 <div class="relative">
                                     <span class="absolute left-2.5 top-1.5 text-slate-400 font-bold">$</span>
                                     <input type="number" id="input-anticipo" value="0" min="0" step="500" placeholder="0" oninput="calculateFinancing()" class="w-full pl-6 bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 font-bold text-slate-800 focus:ring-2 focus:ring-brand-600 focus:outline-none">
                                 </div>
                             </div>
                             <div>
-                                <label class="block font-semibold text-slate-600 mb-1">Saldo Financiado (Compromiso)</label>
+                                <label class="block font-semibold text-slate-600 mb-1">Saldo Financiado</label>
                                 <div class="relative">
                                     <span class="absolute left-2.5 top-1.5 text-slate-400 font-bold">$</span>
                                     <input type="text" id="input-saldo-financiar" readonly class="w-full pl-6 bg-slate-100 border border-slate-300 rounded px-2.5 py-1.5 font-extrabold text-blue-800 cursor-not-allowed">
@@ -448,7 +453,12 @@
 
                         <div class="grid grid-cols-2 gap-2.5">
                             <div>
-                                <label class="block font-semibold text-slate-600 mb-1">Cantidad de Cuotas</label>
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="font-semibold text-slate-600">Cantidad de Cuotas</label>
+                                    <button type="button" onclick="startCuotasVoice(this)" title="Dictar cuotas por voz" class="text-slate-400 hover:text-rose-600 px-1 py-0.5 rounded text-xs transition cursor-pointer">
+                                        <i class="fa-solid fa-microphone"></i>
+                                    </button>
+                                </div>
                                 <select id="select-cuotas" onchange="calculateFinancing()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 font-bold focus:ring-2 focus:ring-brand-600 focus:outline-none">
                                     <option value="1">1 Cuota (Pago directo)</option>
                                     <option value="2">2 Cuotas fijas</option>
@@ -1415,6 +1425,138 @@
         }
 
         // MICRÓFONO INDIVIDUAL POR CAMPO
+                // FUNCIONES DE DICTADO POR VOZ PARA PRECIO, ANTICIPO Y CUOTAS
+        function startItemPriceVoice(index, btnElem) {
+            const SpeechClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechClass) {
+                showToast("Toca la casilla e ingresa el precio con el teclado", "warning");
+                return;
+            }
+            try {
+                if (fieldRecognition) fieldRecognition.abort();
+                fieldRecognition = new SpeechClass();
+                fieldRecognition.lang = 'es-AR';
+                fieldRecognition.continuous = false;
+                fieldRecognition.interimResults = false;
+
+                btnElem.classList.add('mic-recording');
+                showToast("Escuchando precio... (Ej: '75 mil' o '80000')");
+
+                fieldRecognition.onresult = (event) => {
+                    const resText = event.results[0][0].transcript.toLowerCase();
+                    let val = parseFloat(resText.replace(/[^\d\.]/g, '')) || 0;
+                    if (/mil|k/i.test(resText) && val < 1000) val *= 1000;
+                    if (val >= 0) {
+                        updateItemPrice(index, val);
+                        renderItemsList();
+                        showToast(`Precio actualizado: $ ${val.toLocaleString('es-AR')}`);
+                    }
+                };
+
+                fieldRecognition.onend = () => {
+                    btnElem.classList.remove('mic-recording');
+                };
+
+                fieldRecognition.onerror = (e) => {
+                    btnElem.classList.remove('mic-recording');
+                    showToast("No se pudo reconocer. Ingresa el valor a mano", "warning");
+                };
+
+                fieldRecognition.start();
+            } catch(err) {
+                btnElem.classList.remove('mic-recording');
+                showToast("Toca la casilla para ingresar el precio", "warning");
+            }
+        }
+
+        function startAnticipoVoice(btnElem) {
+            const SpeechClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechClass) return;
+            try {
+                if (fieldRecognition) fieldRecognition.abort();
+                fieldRecognition = new SpeechClass();
+                fieldRecognition.lang = 'es-AR';
+                fieldRecognition.continuous = false;
+                fieldRecognition.interimResults = false;
+
+                btnElem.classList.add('mic-recording');
+                showToast("Escuchando anticipo... (Ej: '20 mil' o 'sin anticipo')");
+
+                fieldRecognition.onresult = (event) => {
+                    const resText = event.results[0][0].transcript.toLowerCase();
+                    let val = 0;
+                    if (resText.includes('sin') || resText.includes('cero') || resText.includes('nada')) {
+                        val = 0;
+                    } else {
+                        val = parseFloat(resText.replace(/[^\d\.]/g, '')) || 0;
+                        if (/mil|k/i.test(resText) && val < 1000) val *= 1000;
+                    }
+                    document.getElementById('input-anticipo').value = val;
+                    calculateFinancing();
+                    showToast(`Anticipo: $ ${val.toLocaleString('es-AR')}`);
+                };
+
+                fieldRecognition.onend = () => {
+                    btnElem.classList.remove('mic-recording');
+                };
+
+                fieldRecognition.onerror = (e) => {
+                    btnElem.classList.remove('mic-recording');
+                };
+
+                fieldRecognition.start();
+            } catch(err) {
+                btnElem.classList.remove('mic-recording');
+            }
+        }
+
+        function startCuotasVoice(btnElem) {
+            const SpeechClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechClass) return;
+            try {
+                if (fieldRecognition) fieldRecognition.abort();
+                fieldRecognition = new SpeechClass();
+                fieldRecognition.lang = 'es-AR';
+                fieldRecognition.continuous = false;
+                fieldRecognition.interimResults = false;
+
+                btnElem.classList.add('mic-recording');
+                showToast("Escuchando cuotas... (Ej: '4 cuotas' o 'tres')");
+
+                fieldRecognition.onresult = (event) => {
+                    const resText = event.results[0][0].transcript.toLowerCase();
+                    const cuotasMatch = resText.match(/(\d+)\s*cuotas/i) || resText.match(/(?:en\s+)?(una|dos|tres|cuatro|cinco|seis|ocho|diez|doce)\s*cuotas/i);
+                    let cQty = 3;
+                    if (cuotasMatch) {
+                        cQty = parseInt(cuotasMatch[1]);
+                        if (isNaN(cQty)) {
+                            const mapa = { una: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, ocho: 8, diez: 10, doce: 12 };
+                            cQty = mapa[cuotasMatch[1]] || 3;
+                        }
+                    } else {
+                        const numOnly = parseInt(resText.replace(/\D/g, ''));
+                        if (numOnly > 0 && numOnly <= 24) cQty = numOnly;
+                    }
+                    const select = document.getElementById('select-cuotas');
+                    select.value = cQty;
+                    calculateFinancing();
+                    showToast(`Plan: ${cQty} cuotas fijas`);
+                };
+
+                fieldRecognition.onend = () => {
+                    btnElem.classList.remove('mic-recording');
+                };
+
+                fieldRecognition.onerror = (e) => {
+                    btnElem.classList.remove('mic-recording');
+                };
+
+                fieldRecognition.start();
+            } catch(err) {
+                btnElem.classList.remove('mic-recording');
+            }
+        }
+
         function startFieldVoice(fieldId, btnElem) {
             const SpeechClass = getSpeechRecognitionClass();
             const inputElem = document.getElementById(fieldId);
@@ -1488,11 +1630,15 @@
                         <label class="text-[9px] text-slate-500 font-bold block">DESCRIPCIÓN / PRODUCTO</label>
                         <input type="text" value="${escapeHtml(item.name)}" placeholder="Nombre del libro o colección..." oninput="updateItemName(${index}, this.value)" class="w-full bg-white border border-slate-300 rounded px-2 py-1 text-xs font-medium">
                     </div>
-                    <div class="w-24 sm:w-28">
-                        <label class="text-[9px] text-brand-800 font-bold block flex items-center gap-1">
-                            <span>PRECIO ($)</span>
-                            <span class="text-[8px] bg-amber-100 text-amber-800 px-1 rounded font-normal">libre</span>
-                        </label>
+                    <div class="w-28 sm:w-32">
+                        <div class="flex items-center justify-between mb-0.5">
+                            <label class="text-[9px] text-brand-800 font-bold flex items-center gap-1">
+                                <span>PRECIO ($)</span>
+                            </label>
+                            <button type="button" onclick="startItemPriceVoice(${index}, this)" title="Dictar precio por voz" class="text-slate-400 hover:text-rose-600 px-1 rounded text-[10px] transition cursor-pointer">
+                                <i class="fa-solid fa-microphone"></i>
+                            </button>
+                        </div>
                         <input type="number" step="500" value="${item.price === 0 ? '' : item.price}" placeholder="0" oninput="updateItemPrice(${index}, this.value)" class="w-full bg-white border border-amber-300 rounded px-1.5 py-1 text-right font-mono font-bold text-slate-900 focus:ring-2 focus:ring-amber-500">
                     </div>
                     <div class="pt-3">
