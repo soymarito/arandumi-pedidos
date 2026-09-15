@@ -1166,34 +1166,26 @@
         // PARSER INTELIGENTE DE VOZ (NLP CON RECONOCIMIENTO DE TODOS LOS PRODUCTOS ARANDUMÍ)
         function parseVoiceTranscript(text) {
             if (!text || text.trim().length === 0) return;
+
+            detectedEntities = { items: [] };
             const t = text.toLowerCase();
-            detectedEntities = {};
 
-            // 1. Extraer Email / Correo
-            let cleanTextForEmail = text
-                .replace(/\s*(?:arroba|at)\s*/gi, '@')
-                .replace(/\s*(?:punto|dot)\s*/gi, '.')
-                .replace(/\s*(?:guion\s+bajo|gui[oó]n\s+bajo)\s*/gi, '_')
-                .replace(/\s*(?:guion\s+medio|gui[oó]n\s+medio|guion|gui[oó]n)\s*/gi, '-');
-
-            let rawEmail = null;
-            const emailKeywordMatch = cleanTextForEmail.match(/(?:email|correo|mail|e-mail)\s*(?:electr[oó]nico\s*)?(?:es\s*|:\s*)?([a-zA-Z0-9._%+\-áéíóúñÁÉÍÓÚÑ\s]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/i);
-            if (emailKeywordMatch) {
-                rawEmail = emailKeywordMatch[1].trim();
-            } else {
-                const directEmailMatch = cleanTextForEmail.match(/([a-zA-Z0-9._%+\-áéíóúñÁÉÍÓÚÑ]+(?:\.[a-zA-Z0-9._%+\-áéíóúñÁÉÍÓÚÑ]+)*@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/i);
-                if (directEmailMatch) {
-                    rawEmail = directEmailMatch[1].trim();
+            // Función auxiliar para parsear números y 'mil' / 'k'
+            function parseSpokenNum(numStr, unitStr) {
+                if (!numStr) return 0;
+                let val = parseFloat(numStr.replace(/\D/g, ''));
+                if (isNaN(val)) return 0;
+                if (unitStr && /mil|k/i.test(unitStr) && val < 1000) {
+                    val *= 1000;
                 }
+                return val;
             }
 
-            if (rawEmail) {
-                let emailNormalized = normalizeText(rawEmail).toLowerCase().replace(/\s+/g, '');
-                const validEmail = emailNormalized.match(/[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}/);
-                if (validEmail) {
-                    detectedEntities.email = validEmail[0];
-                    document.getElementById('detected-email').textContent = detectedEntities.email;
-                }
+            // 1. Extraer Email
+            const emailMatch = text.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i);
+            if (emailMatch) {
+                detectedEntities.email = emailMatch[1].toLowerCase();
+                document.getElementById('detected-email').textContent = detectedEntities.email;
             }
 
             // 2. Extraer Teléfono / Celular
@@ -1229,37 +1221,34 @@
             }
 
             // 4. Extraer Cargo / Función
-            const cargoMatch = text.match(/(?:cargo|funci[oó]n|es\s+)?(maestr[oa](?:\s+de\s+[a-záéíóúñA-ZÁÉÍÓÚÑ0-9°\s]+?)?|docente(?:\s+titular|\s+suplente)?|profesor[a]?(?:\s+de\s+[a-záéíóúñA-ZÁÉÍÓÚÑ0-9°\s]+?)?|director[a]?(?:\s+de\s+[a-záéíóúñA-ZÁÉÍÓÚÑ0-9°\s]+?)?|vicedirector[a]?(?:\s+de\s+[a-záéíóúñA-ZÁÉÍÓÚÑ0-9°\s]+?)?|preceptor[a]?|rector[a]?)(?=(?:\s+celular|\s+tel|\s+dni|\s+escuela|\s+correo|\s+email|\s+anticipo|\s+cuota|\s+domicilio|\s+lleva|,|\.|$))/i);
+            const cargoMatch = text.match(/(?:cargo|funci[oó]n|soy\s+|es\s+)?(maestr[oa](?:\s+de\s+[a-záéíóúñA-ZÁÉÍÓÚÑ0-9°\s]+?)?|docente(?:\s+titular|\s+suplente)?|profesor[a]?(?:\s+de\s+[a-záéíóúñA-ZÁÉÍÓÚÑ0-9°\s]+?)?|director[a]?(?:\s+de\s+[a-záéíóúñA-ZÁÉÍÓÚÑ0-9°\s]+?)?|vicedirector[a]?(?:\s+de\s+[a-záéíóúñA-ZÁÉÍÓÚÑ0-9°\s]+?)?|preceptor[a]?|rector[a]?)(?=(?:\s+celular|\s+tel|\s+dni|\s+escuela|\s+correo|\s+email|\s+anticipo|\s+cuota|\s+domicilio|\s+lleva|\s+quiero|\s+pide|,|\.|$))/i);
             if (cargoMatch) {
                 detectedEntities.cargo = capitalizeWords(cargoMatch[1].trim());
                 document.getElementById('detected-cargo').textContent = detectedEntities.cargo;
             }
 
             // 5. Extraer Escuela
-            const escuelaMatch = text.match(/(?:escuela|colegio|instituto|jard[ií]n)\s+(?:n[uú]mero|nro|n°|n\s)?\s*([a-záéíóúñA-ZÁÉÍÓÚÑ0-9\s°'"\-]+?)(?=(?:maestr[oa]|docente|profesor[a]?|titular|suplente|director[a]?|vicedirector[a]?|preceptor|cargo|dni|domicilio|turno|celular|tel[eé]fono|tel|email|correo|anticipo|lleva|,|\.|$))/i);
+            const escuelaMatch = text.match(/(?:escuela|colegio|instituto|jard[ií]n)\s+(?:n[uú]mero|nro|n°|n\s)?\s*([a-záéíóúñA-ZÁÉÍÓÚÑ0-9\s°'"\-]+?)(?=(?:maestr[oa]|docente|profesor[a]?|titular|suplente|director[a]?|vicedirector[a]?|preceptor|cargo|dni|domicilio|turno|celular|tel[eé]fono|tel|email|correo|anticipo|lleva|quiero|soy|,|\.|$))/i);
             if (escuelaMatch && escuelaMatch[1].trim().length > 1) {
-                let esc = escuelaMatch[1].trim();
-                if (/^\d+/.test(esc)) {
-                    esc = `N° ${esc}`;
-                }
+                let esc = escuelaMatch[1].trim().replace(/\s+(?:soy|es|cargo|turno.*)$/i, '');
+                if (/^\d+/.test(esc)) esc = `N° ${esc}`;
                 detectedEntities.escuela = 'Escuela ' + capitalizeWords(esc);
                 document.getElementById('detected-escuela').textContent = detectedEntities.escuela;
             }
 
             // 6. Extraer Nombre del Cliente
             let nameRaw = null;
-            const nombreMatch = text.match(/(?:docente|profesora?|cliente|comprador|titular|nombre\s+es|para|a\s+nombre\s+de)\s+([a-záéíóúñA-ZÁÉÍÓÚÑ\s]+?)(?=(?:de\s+la\s+escuela|escuela|dni|con\s+dni|documento|domicilio|vive|calle|celular|tel[eé]fono|tel|email|correo|fecha|compra|lleva|,|\.|$))/i);
+            const nombreMatch = text.match(/(?:docente|profesora?|cliente|comprador|titular|nombre\s+es|para|a\s+nombre\s+de|soy)\s+([a-záéíóúñA-ZÁÉÍÓÚÑ\s]+?)(?=(?:de\s+la\s+escuela|escuela|dni|con\s+dni|documento|domicilio|vive|calle|celular|tel[eé]fono|tel|email|correo|fecha|compra|lleva|quiero|pide|desea|solicita|rotacuento|kit|libro|megapack|,|\.|$))/i);
             if (nombreMatch) {
                 nameRaw = nombreMatch[1].trim();
             } else {
-                const seLlamaMatch = text.match(/(?:se\s+llama|se\s+trata\s+de)\s+([a-záéíóúñA-ZÁÉÍÓÚÑ\s]+?)(?=(?:de\s+la\s+escuela|escuela|dni|con\s+dni|documento|domicilio|vive|calle|celular|tel[eé]fono|tel|email|correo|fecha|compra|lleva|,|\.|$))/i);
-                if (seLlamaMatch) {
-                    nameRaw = seLlamaMatch[1].trim();
-                }
+                const seLlamaMatch = text.match(/(?:se\s+llama|se\s+trata\s+de)\s+([a-záéíóúñA-ZÁÉÍÓÚÑ\s]+?)(?=(?:de\s+la\s+escuela|escuela|dni|con\s+dni|documento|domicilio|vive|calle|celular|tel[eé]fono|tel|email|correo|fecha|compra|lleva|quiero|pide|desea|solicita|rotacuento|kit|libro|megapack|,|\.|$))/i);
+                if (seLlamaMatch) nameRaw = seLlamaMatch[1].trim();
             }
 
             if (nameRaw) {
-                nameRaw = nameRaw.replace(/^(?:se\s+llama|el\s+cliente\s+es|cliente|docente|profesor|profesora|titular|don|doña|nombre|es)\s+/i, '');
+                nameRaw = nameRaw.replace(/^(?:se\s+llama|el\s+cliente\s+es|cliente|docente|profesor|profesora|titular|don|doña|nombre|es|soy)\s+/i, '');
+                nameRaw = nameRaw.replace(/\s+(?:quiero|lleva|pide|desea|de|la|el)$/i, '');
                 if (nameRaw.length > 2) {
                     detectedEntities.nombre = capitalizeWords(nameRaw.trim());
                     document.getElementById('detected-nombre').textContent = detectedEntities.nombre;
@@ -1267,17 +1256,17 @@
             }
 
             // 7. Extraer Domicilio
-            const domMatch = text.match(/(?:domicilio|direcci[oó]n|vive\s+en|calle|en\s+calle)\s+([a-záéíóúñA-ZÁÉÍÓÚÑ0-9\s°\.\-]+?)(?=(?:celular|tel[eé]fono|tel|dni|escuela|colegio|email|correo|anticipo|cuota|lleva|,|\.|$))/i);
+            const domMatch = text.match(/(?:domicilio|direcci[oó]n|vive\s+en|calle|en\s+calle)\s+(?:es|en\s+)?([a-záéíóúñA-ZÁÉÍÓÚÑ0-9\s°\.\-]+?)(?=(?:celular|tel[eé]fono|tel|dni|escuela|colegio|email|correo|anticipo|cuota|lleva|quiero|,|\.|$))/i);
             if (domMatch && domMatch[1].trim().length > 3) {
-                detectedEntities.domicilio = capitalizeWords(domMatch[1].trim());
+                let dom = domMatch[1].trim().replace(/^(?:tengo\s+mi\s+|mi\s+domicilio\s+es\s+|en\s+)/i, '');
+                if (dom.length > 2) detectedEntities.domicilio = capitalizeWords(dom);
             }
 
             // 8. Extraer Anticipo
-            const antMatch = t.match(/(?:anticipo|entrega|seña|seña\s+de)\s+(?:de\s+)?(\$?\s*[\d\.]+)/i) || 
-                             t.match(/(\$?\s*[\d\.]+)\s*(?:mil|pesos)?\s*(?:de\s+anticipo|de\s+entrega|de\s+seña)/i);
+            const antMatch = t.match(/(?:anticipo|entrega|seña|seña\s+de)\s+(?:de\s+)?(\$?\s*[\d\.]+)\s*(mil|pesos|\$)?/i) || 
+                             t.match(/(\$?\s*[\d\.]+)\s*(mil|pesos|\$)?\s*(?:de\s+anticipo|de\s+entrega|de\s+seña)/i);
             if (antMatch) {
-                let num = parseFloat(antMatch[1].replace(/\D/g, ''));
-                if (t.includes('mil') && num < 1000) num *= 1000;
+                let num = parseSpokenNum(antMatch[1], antMatch[2]);
                 if (num > 0) detectedEntities.anticipo = num;
             }
 
@@ -1292,15 +1281,34 @@
                 detectedEntities.cuotas = cQty;
             }
 
-            // 10. EXTRAER PRODUCTOS Y PRECIOS HABLADOS (TODOS LOS PRODUCTOS)
+            // 10. EXTRAER PRODUCTOS Y PRECIOS HABLADOS DE MANERA EXACTA
             let items = [];
 
             function extractItemPrice(phraseRegex, defaultPrice) {
-                const pMatch = t.match(new RegExp(phraseRegex + '[^0-9]*?(\d+[\.\d]*)\s*(?:mil|pesos|\$)?', 'i'));
-                if (pMatch) {
-                    let pVal = parseFloat(pMatch[1].replace(/\D/g, ''));
-                    if (pVal > 0) return (pVal < 1000 && t.includes('mil')) ? pVal * 1000 : pVal;
+                // Formato 'en 4 cuotas de 75 mil'
+                const cuotaDeMatch = t.match(/(?:cuotas?\s+de\s+|cuota\s+de\s+)(\d+[\.\d]*)\s*(mil|pesos|\$)?/i);
+                if (cuotaDeMatch) {
+                    let val = parseSpokenNum(cuotaDeMatch[1], cuotaDeMatch[2]);
+                    if (val > 0) return val;
                 }
+
+                // Formato '75 mil en 4 cuotas'
+                const precioCuotaMatch = t.match(/(\d+[\.\d]*)\s*(mil|pesos|\$)?\s*(?:en\s+\d+\s*cuotas)/i);
+                if (precioCuotaMatch) {
+                    let val = parseSpokenNum(precioCuotaMatch[1], precioCuotaMatch[2]);
+                    if (val > 0) return val;
+                }
+
+                // Formato 'rotacuento a/por/valor 85 mil'
+                const pMatch = t.match(new RegExp(phraseRegex + '[^0-9]*?(?:a|por|de|valor|precio)?\s*(\d+[\.\d]*)\s*(mil|pesos|\$)?', 'i'));
+                if (pMatch) {
+                    const afterNum = t.slice(pMatch.index + pMatch[0].length, pMatch.index + pMatch[0].length + 10);
+                    if (!/^\s*cuotas/i.test(afterNum)) {
+                        let val = parseSpokenNum(pMatch[1], pMatch[2]);
+                        if (val > 0) return val;
+                    }
+                }
+
                 return defaultPrice;
             }
 
@@ -1309,7 +1317,7 @@
                 let price = extractItemPrice('(?:megapack total|pack total|megapack completo)', 0);
                 items.push({ name: 'Megapack Total Arandumí (Rotacuentos Dúo Físico/Digital + Láminas + Así Soy Yo)', qty: 1, price: price });
             } else {
-                // B) Megapack Digital Dúo (100% Digital) vs Megapack Dúo (Físico + Digital) vs Kit Dúo Físico
+                // B) Megapack Digital Dúo vs Megapack Dúo Mixto vs Kit Dúo Físico
                 if (t.includes('digital duo') || t.includes('digital dúo') || t.includes('kit digital duo') || t.includes('kit digital dúo') || t.includes('pack digital duo') || t.includes('pack digital dúo')) {
                     let price = extractItemPrice('(?:digital\s*d[uú]o|kit\s*digital\s*d[uú]o)', 0);
                     items.push({ name: 'Megapack Digital Dúo Rotacuentos (Rojo + Verde Interactivos)', qty: 1, price: price });
@@ -1395,9 +1403,15 @@
             }
 
             closeVoiceAssistantModal();
+            
+            // En móvil, asegurarse de mostrar la pestaña de formulario para ver los datos cargados
+            if (typeof setTab === 'function' && window.innerWidth < 1024) {
+                setTab('editor');
+            }
+
             calculateFinancing();
             updateDocument();
-            showToast("¡Datos de voz cargados al formulario! Puedes editarlos cuando quieras.");
+            showToast("¡Datos de voz cargados al formulario! Podés editarlos cuando quieras.");
         }
 
         // MICRÓFONO INDIVIDUAL POR CAMPO
