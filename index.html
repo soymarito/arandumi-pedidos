@@ -1272,15 +1272,17 @@
                 if (dom.length > 2) detectedEntities.domicilio = capitalizeWords(dom);
             }
 
-            // 8. Extraer Anticipo
-            const antMatch = t.match(/(?:anticipo|entrega|seña|seña\s+de)\s+(?:de\s+)?(\$?\s*[\d\.]+)\s*(mil|pesos|\$)?/i) || 
+            // 8. CÁLCULO FINANCIERO INTELIGENTE: Anticipo, Cuotas y Total Calculado
+            let spokenAnticipo = 0;
+            const antMatch = t.match(/(?:anticipo|entrega|seña|seña\s+de|con\s+entrega\s+de)\s+(?:de\s+)?(\$?\s*[\d\.]+)\s*(mil|pesos|\$)?/i) || 
                              t.match(/(\$?\s*[\d\.]+)\s*(mil|pesos|\$)?\s*(?:de\s+anticipo|de\s+entrega|de\s+seña)/i);
             if (antMatch) {
-                let num = parseSpokenNum(antMatch[1], antMatch[2]);
-                if (num > 0) detectedEntities.anticipo = num;
+                spokenAnticipo = parseSpokenNum(antMatch[1], antMatch[2]);
+                detectedEntities.anticipo = spokenAnticipo;
             }
 
-            // 9. Extraer Cuotas
+            let spokenCuotas = 1;
+            let explicitCuotas = false;
             const cuotasMatch = t.match(/(\d+)\s*cuotas/i) || t.match(/(?:en\s+)(una|dos|tres|cuatro|cinco|seis|ocho|diez|doce)\s*cuotas/i);
             if (cuotasMatch) {
                 let cQty = parseInt(cuotasMatch[1]);
@@ -1288,26 +1290,35 @@
                     const mapa = { una: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, ocho: 8, diez: 10, doce: 12 };
                     cQty = mapa[cuotasMatch[1]] || 3;
                 }
-                detectedEntities.cuotas = cQty;
+                spokenCuotas = cQty;
+                explicitCuotas = true;
+                detectedEntities.cuotas = spokenCuotas;
             }
 
-            // 10. EXTRAER PRODUCTOS Y PRECIOS HABLADOS DE MANERA EXACTA
+            // Calcular Total si se habló 'X cuotas de $Y' (ej: '6 cuotas de 80 mil' => 480.000)
+            let calculatedTotalPrice = 0;
+            const cuotaDeMatch = t.match(/(?:(?:en\s+)?\d+\s*cuotas\s+de\s+|cuotas\s+de\s+|cuota\s+de\s+)(\d+[\.\d]*)\s*(mil|pesos|\$)?/i);
+            if (cuotaDeMatch && explicitCuotas) {
+                let valorPorCuota = parseSpokenNum(cuotaDeMatch[1], cuotaDeMatch[2]);
+                if (valorPorCuota > 0) {
+                    calculatedTotalPrice = spokenAnticipo + (spokenCuotas * valorPorCuota);
+                }
+            }
+
+            // Caso '80 mil en 6 cuotas' (donde 80 mil es el total)
+            const totalEnCuotasMatch = t.match(/(\d+[\.\d]*)\s*(mil|pesos|\$)?\s*(?:en\s+\d+\s*cuotas)/i);
+            if (totalEnCuotasMatch && calculatedTotalPrice === 0) {
+                let totalVal = parseSpokenNum(totalEnCuotasMatch[1], totalEnCuotasMatch[2]);
+                if (totalVal > 0) {
+                    calculatedTotalPrice = totalVal;
+                }
+            }
+
+            // 9. EXTRAER PRODUCTOS CON SINÓNIMOS AMPLIOS
             let items = [];
 
             function extractItemPrice(phraseRegex, defaultPrice) {
-                // Formato 'en 4 cuotas de 75 mil'
-                const cuotaDeMatch = t.match(/(?:cuotas?\s+de\s+|cuota\s+de\s+)(\d+[\.\d]*)\s*(mil|pesos|\$)?/i);
-                if (cuotaDeMatch) {
-                    let val = parseSpokenNum(cuotaDeMatch[1], cuotaDeMatch[2]);
-                    if (val > 0) return val;
-                }
-
-                // Formato '75 mil en 4 cuotas'
-                const precioCuotaMatch = t.match(/(\d+[\.\d]*)\s*(mil|pesos|\$)?\s*(?:en\s+\d+\s*cuotas)/i);
-                if (precioCuotaMatch) {
-                    let val = parseSpokenNum(precioCuotaMatch[1], precioCuotaMatch[2]);
-                    if (val > 0) return val;
-                }
+                if (calculatedTotalPrice > 0) return calculatedTotalPrice;
 
                 // Formato 'rotacuento a/por/valor 85 mil'
                 const pMatch = t.match(new RegExp(phraseRegex + '[^0-9]*?(?:a|por|de|valor|precio)?\s*(\d+[\.\d]*)\s*(mil|pesos|\$)?', 'i'));
@@ -1318,63 +1329,69 @@
                         if (val > 0) return val;
                     }
                 }
-
                 return defaultPrice;
             }
 
-            // A) Megapack Total
-            if (t.includes('megapack total') || t.includes('pack total') || (t.includes('megapack') && t.includes('completo'))) {
-                let price = extractItemPrice('(?:megapack total|pack total|megapack completo)', 0);
+            const hasRojo = t.includes('rojo') || t.includes('efemerides') || t.includes('efemérides') || t.includes('patria') || t.includes('san martin') || t.includes('san martín') || t.includes('historia');
+            const hasVerde = t.includes('verde') || t.includes('ecologia') || t.includes('ecología') || t.includes('naturaleza') || t.includes('medio ambiente') || t.includes('ciencias') || t.includes('animales');
+            const hasDigital = t.includes('digital') || t.includes('interactivo') || t.includes('licencia') || t.includes('plataforma');
+            const isDuo = t.includes('duo') || t.includes('dúo') || t.includes('ambos') || t.includes('los dos') || (hasRojo && hasVerde);
+
+            // A) Megapack Total Arandumí
+            if (t.includes('megapack total') || t.includes('pack total') || (t.includes('todo') && t.includes('completo')) || t.includes('todo el catalogo')) {
+                let price = extractItemPrice('(?:megapack total|pack total|completo)', 0);
                 items.push({ name: 'Megapack Total Arandumí (Rotacuentos Dúo Físico/Digital + Láminas + Así Soy Yo)', qty: 1, price: price });
             } else {
-                // B) Megapack Digital Dúo vs Megapack Dúo Mixto vs Kit Dúo Físico
-                if (t.includes('digital duo') || t.includes('digital dúo') || t.includes('kit digital duo') || t.includes('kit digital dúo') || t.includes('pack digital duo') || t.includes('pack digital dúo')) {
-                    let price = extractItemPrice('(?:digital\s*d[uú]o|kit\s*digital\s*d[uú]o)', 0);
-                    items.push({ name: 'Megapack Digital Dúo Rotacuentos (Rojo + Verde Interactivos)', qty: 1, price: price });
-                } else if (t.includes('megapack duo') || t.includes('megapack dúo') || (t.includes('duo') && t.includes('digital')) || (t.includes('dúo') && t.includes('digital'))) {
-                    let price = extractItemPrice('(?:megapack d[uú]o|d[uú]o.*digital)', 0);
-                    items.push({ name: 'Megapack Rotacuentos Dúo (Rojo + Verde Físico y Digital)', qty: 1, price: price });
-                } else if (t.includes('combo duo') || t.includes('combo dúo') || t.includes('kit duo') || t.includes('kit dúo') || t.includes('ambos rotacuentos')) {
-                    let price = extractItemPrice('(?:combo|kit)?\s*d[uú]o', 0);
-                    items.push({ name: 'Kit Dúo Rotacuentos Físicos (Rojo + Verde Completo)', qty: 1, price: price });
+                // B) Dúos (Megapack Digital Dúo vs Megapack Dúo Mixto vs Kit Dúo Físico)
+                if (isDuo) {
+                    if (hasDigital && (t.includes('solo digital') || t.includes('100% digital') || t.includes('plataforma digital'))) {
+                        let price = extractItemPrice('(?:digital\s*d[uú]o|kit\s*digital\s*d[uú]o)', 0);
+                        items.push({ name: 'Megapack Digital Dúo Rotacuentos (Rojo + Verde Interactivos)', qty: 1, price: price });
+                    } else if (hasDigital) {
+                        let price = extractItemPrice('(?:megapack d[uú]o|d[uú]o.*digital)', 0);
+                        items.push({ name: 'Megapack Rotacuentos Dúo (Rojo + Verde Físico y Digital)', qty: 1, price: price });
+                    } else {
+                        let price = extractItemPrice('(?:combo|kit)?\s*d[uú]o', 0);
+                        items.push({ name: 'Kit Dúo Rotacuentos Físicos (Rojo + Verde Completo)', qty: 1, price: price });
+                    }
                 } else {
-                    // C) Rotacuento Rojo
-                    if (t.includes('rojo')) {
-                        if (t.includes('solo digital') || t.includes('kit digital rojo') || t.includes('licencia roja') || t.includes('rojo interactivo')) {
+                    // C) Rotacuento Rojo Individual
+                    if (hasRojo) {
+                        if (hasDigital && (t.includes('solo digital') || t.includes('licencia roja') || t.includes('interactivo'))) {
                             let price = extractItemPrice('(?:kit\s*digital\s*rojo|digital\s*rojo|rojo.*digital)', 0);
                             items.push({ name: 'Kit Digital Rotacuento Rojo (Licencia Interactiva Multiplataforma)', qty: 1, price: price });
-                        } else if (t.includes('rojo digital') || (t.includes('rojo') && t.includes('digital'))) {
+                        } else if (hasDigital) {
                             let price = extractItemPrice('(?:rojo.*digital|digital.*rojo)', 0);
                             items.push({ name: 'Rotacuento Rojo (Físico + Licencia Digital Interactiva)', qty: 1, price: price });
                         } else {
-                            let price = extractItemPrice('(?:rojo|rotacuento rojo|efemerides)', 0);
+                            let price = extractItemPrice('(?:rojo|rotacuento rojo|efemerides|patria)', 0);
                             items.push({ name: 'Rotacuento Rojo (Físico - Efemérides Patrias & Grandes Héroes)', qty: 1, price: price });
                         }
                     }
-                    // D) Rotacuento Verde
-                    if (t.includes('verde')) {
-                        if (t.includes('solo digital') || t.includes('kit digital verde') || t.includes('licencia verde') || t.includes('verde interactivo')) {
+                    // D) Rotacuento Verde Individual
+                    if (hasVerde) {
+                        if (hasDigital && (t.includes('solo digital') || t.includes('licencia verde') || t.includes('interactivo'))) {
                             let price = extractItemPrice('(?:kit\s*digital\s*verde|digital\s*verde|verde.*digital)', 0);
                             items.push({ name: 'Kit Digital Rotacuento Verde (Licencia Interactiva Multiplataforma)', qty: 1, price: price });
-                        } else if (t.includes('verde digital') || (t.includes('verde') && t.includes('digital'))) {
+                        } else if (hasDigital) {
                             let price = extractItemPrice('(?:verde.*digital|digital.*verde)', 0);
                             items.push({ name: 'Rotacuento Verde (Físico + Licencia Digital Interactiva)', qty: 1, price: price });
                         } else {
-                            let price = extractItemPrice('(?:verde|rotacuento verde|ecologia)', 0);
+                            let price = extractItemPrice('(?:verde|rotacuento verde|ecologia|naturaleza)', 0);
                             items.push({ name: 'Rotacuento Verde (Físico - Cuentos de la Naturaleza y Ecología)', qty: 1, price: price });
                         }
                     }
                 }
 
-                // E) Megapack / Kit Láminas
-                if (t.includes('lamina') || t.includes('lámina') || t.includes('pack de laminas') || t.includes('pack de láminas')) {
-                    let price = extractItemPrice('(?:lamina|lámina|laminas|láminas)', 0);
+                // E) Láminas
+                if (t.includes('lamina') || t.includes('lámina') || t.includes('afiche') || t.includes('cartel') || t.includes('actos')) {
+                    let price = extractItemPrice('(?:lamina|lámina|laminas|láminas|afiche|cartel)', 0);
                     items.push({ name: 'Megapack de Láminas Gigantes para Actos Escolares', qty: 1, price: price });
                 }
 
-                // F) Libro Así Soy Yo (Cuerpo Humano)
-                if (t.includes('asi soy') || t.includes('así soy') || t.includes('cuerpo humano')) {
-                    let price = extractItemPrice('(?:asi soy|así soy|cuerpo humano)', 0);
+                // F) Libro Así Soy Yo
+                if (t.includes('asi soy') || t.includes('así soy') || t.includes('cuerpo humano') || t.includes('anatomia') || t.includes('anatomía')) {
+                    let price = extractItemPrice('(?:asi soy|así soy|cuerpo humano|anatomia)', 0);
                     items.push({ name: 'Libro Físico Así Soy Yo (Cuerpo Humano & Exploración Didáctica)', qty: 1, price: price });
                 }
             }
@@ -1936,28 +1953,90 @@
             showToast("¡Firma estampada exitosamente en el documento oficial!");
         }
 
-        // 7. EXPORTACIÓN A PDF
+        // 7. EXPORTACIÓN A PDF ROBUSTA (Anti-página en blanco)
         function exportToPDF() {
+            updateDocument();
+            
+            const previewPanel = document.getElementById('panel-preview');
+            const wasHidden = previewPanel ? previewPanel.classList.contains('hidden') : false;
+            
+            if (wasHidden) {
+                previewPanel.classList.remove('hidden');
+            }
+
             const element = document.getElementById('printable-document');
             const nro = document.getElementById('input-nro-solicitud').value || 'Solicitud';
             const cliente = (document.getElementById('input-cliente-nombre').value || 'Cliente').replace(/\s+/g, '_');
             
             showToast("Generando documento PDF de alta resolución...");
 
+            // Guardar automáticamente en el historial local de ventas
+            saveOrderToLocalHistory();
+
             const opt = {
-                margin:       [6, 6, 6, 6],
+                margin:       [4, 4, 4, 4],
                 filename:     `Arandumi_${nro}_${cliente}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    letterRendering: true,
+                    scrollY: 0,
+                    scrollX: 0
+                },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
-                showToast("¡PDF descargado con éxito!");
+                showToast("¡PDF generado y descargado con éxito!");
+                if (wasHidden) {
+                    previewPanel.classList.add('hidden');
+                }
             }).catch(err => {
                 console.error(err);
+                if (wasHidden) {
+                    previewPanel.classList.add('hidden');
+                }
                 showToast("Error al exportar PDF. Puede usar Imprimir -> Guardar como PDF", "warning");
             });
+        }
+
+        // 7.1 GESTOR DE HISTORIAL LOCAL DE CLIENTES Y VENTAS (Nunca se pierde nada)
+        function saveOrderToLocalHistory() {
+            try {
+                const history = JSON.parse(localStorage.getItem('arandumi_orders_history') || '[]');
+                const currentOrder = {
+                    id: Date.now(),
+                    nro: document.getElementById('input-nro-solicitud').value,
+                    fecha: document.getElementById('input-fecha-emision').value,
+                    cliente: document.getElementById('input-cliente-nombre').value,
+                    dni: document.getElementById('input-cliente-dni').value,
+                    escuela: document.getElementById('input-cliente-escuela').value,
+                    cargo: document.getElementById('input-cliente-cargo').value,
+                    tel: document.getElementById('input-cliente-tel').value,
+                    email: document.getElementById('input-cliente-email').value,
+                    items: [...orderItems],
+                    total: calculateTotal(),
+                    anticipo: parseFloat(document.getElementById('input-anticipo').value) || 0,
+                    cuotas: parseInt(document.getElementById('select-cuotas').value) || 1,
+                    valorCuota: document.getElementById('input-valor-cuota').value,
+                    medioPago: document.getElementById('select-medio-pago').value,
+                    vencimiento: document.getElementById('input-primer-vencimiento').value,
+                    timestamp: new Date().toISOString()
+                };
+
+                // Actualizar o agregar
+                const existingIdx = history.findIndex(h => h.nro === currentOrder.nro);
+                if (existingIdx >= 0) {
+                    history[existingIdx] = currentOrder;
+                } else {
+                    history.unshift(currentOrder);
+                }
+
+                localStorage.setItem('arandumi_orders_history', JSON.stringify(history));
+            } catch(e) {
+                console.warn("No se pudo guardar en localStorage:", e);
+            }
         }
 
         // 8. VISTA PREVIA Y PESTAÑAS MÓVILES
