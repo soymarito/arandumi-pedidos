@@ -126,6 +126,14 @@
 
             <!-- Botones de Acción Rápida -->
             <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <!-- BOTÓN HISTORIAL DE PEDIDOS (MODIFICAR / ANULAR) -->
+                <button type="button" onclick="openHistoryModal()" title="Ver historial de pedidos guardados, modificar o anular" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-indigo-700 hover:bg-indigo-600 text-white transition flex items-center gap-1.5 shadow cursor-pointer">
+                    <i class="fa-solid fa-clock-rotate-left text-amber-300"></i> <span>Mis Pedidos (<span id="history-count-badge">0</span>)</span>
+                </button>
+                <!-- BOTÓN NUEVA VENTA / LIMPIAR -->
+                <button type="button" onclick="confirmNewSale()" title="Iniciar un nuevo pedido en blanco" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 transition flex items-center gap-1.5 shadow cursor-pointer">
+                    <i class="fa-solid fa-rotate-left text-amber-400"></i> <span>Nueva Venta</span>
+                </button>
                 <!-- BOTÓN PRINCIPAL DE DICTADO POR VOZ INTELIGENTE -->
                 <button type="button" onclick="openVoiceAssistantModal()" class="px-3 py-1.5 rounded-md text-xs font-bold bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white transition flex items-center gap-1.5 shadow-md transform active:scale-95 cursor-pointer">
                     <i class="fa-solid fa-microphone-lines animate-pulse text-amber-200"></i> <span>Dictado por Voz</span>
@@ -229,11 +237,24 @@
 
                 <!-- 2. DATOS DEL CLIENTE / DOCENTE / INSTITUCIÓN -->
                 <div class="bg-white rounded-xl shadow-md border border-slate-200 p-4 sm:p-5">
-                    <div class="flex justify-between items-center mb-3">
+                    <div class="flex justify-between items-center mb-2.5">
                         <h2 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-brand-800 flex items-center gap-2">
-                            <i class="fa-solid fa-user-graduate text-amber-500"></i> Datos del Comprador / Docente
+                            <i class="fa-solid fa-user-graduate text-amber-500"></i> Datos del Comprador & Lugar de Trabajo
                         </h2>
-                        <span class="text-[11px] text-slate-400">Suscriptor</span>
+                        <button type="button" onclick="resetFormClean(); showToast('Formulario limpio y listo');" class="text-[11px] bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold px-2.5 py-1 rounded-md flex items-center gap-1 transition shadow-sm cursor-pointer">
+                            <i class="fa-solid fa-broom"></i> Limpiar Datos
+                        </button>
+                    </div>
+
+                    <!-- Selector de Tipo de Compra (Personal vs Institucional / Cooperadora) -->
+                    <div class="mb-3 p-2 bg-slate-50 border border-slate-200 rounded-lg">
+                        <label class="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                            <i class="fa-solid fa-tag text-amber-500 mr-1"></i> Carácter de la Compra:
+                        </label>
+                        <select id="select-tipo-compra" onchange="updateDocument()" class="w-full text-xs bg-white border border-slate-300 rounded px-2.5 py-1.5 font-bold text-brand-900 focus:ring-2 focus:ring-brand-600 focus:outline-none">
+                            <option value="PERSONAL" selected>👤 Compra Personal (Docente Particular - 98% de los casos)</option>
+                            <option value="INSTITUCIONAL">🏫 Compra Institucional / Cooperadora Escolar</option>
+                        </select>
                     </div>
 
                     <div class="space-y-3 text-xs">
@@ -244,7 +265,7 @@
                                     <i class="fa-solid fa-microphone"></i>
                                 </button>
                             </div>
-                            <input type="text" id="input-cliente-nombre" value="Jorge Fernández" placeholder="Ej: Jorge Fernández / Prof. María Giménez" oninput="updateDocument()" class="w-full font-medium bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none">
+                            <input type="text" id="input-cliente-nombre" value="" placeholder="Nombre y Apellido del comprador..." oninput="updateDocument()" class="w-full font-medium bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none">
                         </div>
 
                         <div class="grid grid-cols-2 gap-2.5">
@@ -255,7 +276,7 @@
                                         <i class="fa-solid fa-microphone"></i>
                                     </button>
                                 </div>
-                                <input type="text" id="input-cliente-dni" value="28.345.678" placeholder="Ej: 28.345.678" oninput="updateDocument()" class="w-full font-medium bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none">
+                                <input type="text" id="input-cliente-dni" value="" placeholder="Ej: —" oninput="updateDocument()" class="w-full font-medium bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none">
                             </div>
                             <div>
                                 <div class="flex justify-between items-center mb-1">
@@ -264,7 +285,7 @@
                                         <i class="fa-solid fa-microphone"></i>
                                     </button>
                                 </div>
-                                <input type="text" id="input-cliente-cargo" value="Maestro De Primer Grado" placeholder="Ej: Maestro De Primer Grado / Directora" oninput="updateDocument()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none">
+                                <input type="text" id="input-cliente-cargo" value="" placeholder="Ej: Maestro De Primer Grado / Directora" oninput="updateDocument()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none">
                             </div>
                         </div>
 
@@ -275,7 +296,7 @@
                                     <i class="fa-solid fa-microphone"></i>
                                 </button>
                             </div>
-                            <input type="text" id="input-cliente-escuela" value="Escuela N° 3 Del Centenario" placeholder="Ej: Escuela N° 3 Del Centenario" oninput="updateDocument()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none">
+                            <input type="text" id="input-cliente-escuela" value="" placeholder="Ej: Escuela N° 3 Del Centenario" oninput="updateDocument()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none">
                         </div>
 
                         <div>
@@ -285,7 +306,7 @@
                                     <i class="fa-solid fa-microphone"></i>
                                 </button>
                             </div>
-                            <input type="text" id="input-cliente-domicilio" value="Calle San Luis 1247, Corrientes Capital" placeholder="Ej: Calle San Luis 1247, Corrientes Capital" oninput="updateDocument()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none">
+                            <input type="text" id="input-cliente-domicilio" value="" placeholder="Ej: —" oninput="updateDocument()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none">
                         </div>
 
                         <div class="grid grid-cols-2 gap-2.5">
@@ -296,7 +317,7 @@
                                         <i class="fa-solid fa-microphone"></i>
                                     </button>
                                 </div>
-                                <input type="text" id="input-cliente-tel" value="379 4898989" placeholder="Ej: 379 4898989" oninput="updateDocument()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none">
+                                <input type="text" id="input-cliente-tel" value="" placeholder="Ej: —" oninput="updateDocument()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none">
                             </div>
                             <div>
                                 <div class="flex justify-between items-center mb-1">
@@ -307,7 +328,7 @@
                                         <i class="fa-solid fa-microphone"></i>
                                     </button>
                                 </div>
-                                <input type="email" id="input-cliente-email" value="jorgefernandez@gmail.com" placeholder="docente@gmail.com" oninput="updateDocument()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none font-medium">
+                                <input type="email" id="input-cliente-email" value="" placeholder="docente@gmail.com" oninput="updateDocument()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none font-medium">
                             </div>
                         </div>
                     </div>
@@ -403,6 +424,9 @@
                                 </button>
                                 <button type="button" onclick="addPreset('Libro Físico Así Soy Yo (Cuerpo Humano & Exploración Didáctica)', 0)" class="text-[10.5px] bg-orange-50 hover:bg-orange-100 text-orange-900 border border-orange-200 px-2 py-0.5 rounded transition font-medium cursor-pointer">
                                     🧒 Libro Así Soy Yo (Cuerpo Humano)
+                                </button>
+                                <button type="button" onclick="addPreset('Megapack Epaminondas y su Madrina (Colección Infantil Didáctica)', 0)" class="text-[10.5px] bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 px-2 py-0.5 rounded transition font-medium cursor-pointer">
+                                    📖 Megapack Epaminondas y su Madrina
                                 </button>
                                 <button type="button" onclick="addPreset('Megapack Total Arandumí (Rotacuentos Dúo Físico/Digital + Láminas + Así Soy Yo)', 0)" class="text-[10.5px] bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 px-2 py-0.5 rounded transition font-bold cursor-pointer">
                                     👑 Megapack Total Arandumí
@@ -501,7 +525,7 @@
                         <!-- Datos Bancarios Configurables de Arandumí para mostrar en el Documento -->
                         <div class="pt-2 border-t border-slate-200">
                             <label class="block font-semibold text-slate-600 mb-1">Datos de Cobro Bancario / Alias oficial:</label>
-                            <input type="text" id="input-datos-bancarios" value="Alias: ARANDUMI.LIBROS • Banco de Corrientes / CBU: 0940001830002598740012" oninput="updateDocument()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 text-[11px] font-mono text-slate-700 focus:ring-2 focus:ring-brand-600 focus:outline-none">
+                            <input type="text" id="input-datos-bancarios" value="Alias: marito26.arg • Brubank (Titular: Mario Horacio Espínola)" oninput="updateDocument()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 text-[11px] font-mono text-slate-700 focus:ring-2 focus:ring-brand-600 focus:outline-none">
                         </div>
                     </div>
                 </div>
@@ -584,11 +608,11 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
                             <div>
                                 <span class="font-bold text-brand-900 uppercase text-[10px]">Titular / Docente:</span>
-                                <p class="font-semibold text-slate-800" id="doc-cliente-nombre">Jorge Fernández</p>
+                                <p class="font-semibold text-slate-800" id="doc-cliente-nombre">—</p>
                             </div>
                             <div>
                                 <span class="font-bold text-brand-900 uppercase text-[10px]">D.N.I. / C.U.I.T.:</span>
-                                <p class="font-semibold text-slate-800 font-mono" id="doc-cliente-dni">28.345.678</p>
+                                <p class="font-semibold text-slate-800 font-mono" id="doc-cliente-dni">—</p>
                             </div>
                             <div>
                                 <span class="font-bold text-brand-900 uppercase text-[10px]">Institución / Escuela:</span>
@@ -600,11 +624,11 @@
                             </div>
                             <div>
                                 <span class="font-bold text-brand-900 uppercase text-[10px]">Domicilio Constituido:</span>
-                                <p class="text-slate-700" id="doc-cliente-domicilio">Calle San Luis 1247, Corrientes Capital</p>
+                                <p class="text-slate-700" id="doc-cliente-domicilio">—</p>
                             </div>
                             <div>
                                 <span class="font-bold text-brand-900 uppercase text-[10px]">WhatsApp & Email:</span>
-                                <p class="text-slate-700" id="doc-cliente-contacto">379 4898989 • jorgefernandez@gmail.com</p>
+                                <p class="text-slate-700" id="doc-cliente-contacto">— • —</p>
                             </div>
                         </div>
                     </div>
@@ -677,7 +701,7 @@
                             </div>
                             <div id="doc-datos-bancarios-pill" class="text-[10px] text-slate-600 bg-amber-50/80 py-0.5 px-2 rounded border border-amber-200 flex items-center gap-1.5">
                                 <i class="fa-solid fa-building-columns text-amber-600"></i>
-                                <span id="doc-datos-bancarios-text">Alias: ARANDUMI.LIBROS • Banco de Corrientes</span>
+                                <span id="doc-datos-bancarios-text">Alias: marito26.arg • Brubank (Mario Horacio Espínola)</span>
                             </div>
                         </div>
                     </div>
@@ -697,8 +721,8 @@
                         <!-- Cuerpo con Rigor Jurídico Inatacable -->
                         <div class="legal-text text-[11px] text-slate-800 leading-relaxed text-justify space-y-1.5">
                             <p>
-                                Por el presente <strong>COMPROMISO DE PAGO Y PAGARÉ SIN PROTESTO</strong>, el/la abajo firmante <strong id="legal-cliente-nombre" class="underline">Jorge Fernández</strong>, 
-                                D.N.I./C.U.I.T. N° <strong id="legal-cliente-dni" class="font-mono">28.345.678</strong>, con domicilio constituido en <strong id="legal-cliente-domicilio">Calle San Luis 1247, Corrientes Capital</strong>,
+                                Por el presente <strong>COMPROMISO DE PAGO Y PAGARÉ SIN PROTESTO</strong>, el/la abajo firmante <strong id="legal-cliente-nombre" class="underline">—</strong>, 
+                                D.N.I./C.U.I.T. N° <strong id="legal-cliente-dni" class="font-mono">—</strong>, con domicilio constituido en <strong id="legal-cliente-domicilio">—</strong>,
                                 se compromete y obliga a pagar incondicionalmente a la orden de <strong>ARANDUMÍ LIBROS & EDITORIAL</strong> (o a su cesionario o endosatario debidamente acreditado), 
                                 la suma de <strong>PESOS <span id="legal-monto-letras" class="uppercase">OCHENTA Y CINCO MIL PESOS</span> ($ <span id="legal-monto-numeros" class="font-mono">85.000,00</span>)</strong>.
                             </p>
@@ -743,8 +767,8 @@
                                 </span>
                             </div>
                             <div class="w-full border-t-2 border-brand-900 pt-1">
-                                <p class="text-xs font-bold text-brand-900" id="doc-firma-nombre">Jorge Fernández</p>
-                                <p class="text-[10px] text-slate-600 font-mono">D.N.I. N° <span id="doc-firma-dni">28.345.678</span></p>
+                                <p class="text-xs font-bold text-brand-900" id="doc-firma-nombre">—</p>
+                                <p class="text-[10px] text-slate-600 font-mono">D.N.I. N° <span id="doc-firma-dni">—</span></p>
                                 <p class="text-[9px] text-slate-400 uppercase font-semibold">Firma del Titular / Deudor</p>
                             </div>
                         </div>
@@ -794,7 +818,7 @@
                 </div>
 
                 <!-- Textarea interactivo editable -->
-                <textarea id="voice-transcript-input" rows="3" oninput="parseVoiceTranscript(this.value)" placeholder="Toca el botón rojo para hablar, o toca aquí y usa el microfonito 🎙️ de tu teclado. Ej: 'Cliente Jorge Fernández DNI 28345678 Escuela 3 del Centenario maestro de primer grado celular 379 4898989 correo jorge@gmail.com lleva Rotacuento Rojo por 85000 y el librito Así Soy Yo por 25 mil anticipo 20000 en 3 cuotas'..." class="w-full bg-white p-2.5 rounded-lg border border-slate-300 text-xs text-slate-800 leading-relaxed font-sans focus:ring-2 focus:ring-rose-500 focus:outline-none"></textarea>
+                <textarea id="voice-transcript-input" rows="3" oninput="parseVoiceTranscript(this.value)" placeholder="Toca el botón rojo para hablar, o toca aquí y usa el microfonito 🎙️ de tu teclado. Ej: 'Cliente María Giménez DNI 30123456 Escuela 3 del Centenario maestro de primer grado celular — correo maria@gmail.com lleva Rotacuento Rojo por 85000 y el librito Así Soy Yo por 25 mil anticipo 20000 en 3 cuotas'..." class="w-full bg-white p-2.5 rounded-lg border border-slate-300 text-xs text-slate-800 leading-relaxed font-sans focus:ring-2 focus:ring-rose-500 focus:outline-none"></textarea>
                 
                 <div class="mt-2 text-[10px] text-slate-500 flex items-center justify-between">
                     <span>💡 <em>Podés dictar todo de corrido o corregir el texto con tu teclado.</em></span>
@@ -974,6 +998,44 @@
         </div>
     </div>
 
+    <!-- MODAL 4: HISTORIAL DE PEDIDOS / VENTAS (MODIFICAR, ANULAR, REENVIAR) -->
+    <div id="modal-history" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4 no-print">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-4 sm:p-6 border border-slate-200 max-h-[92vh] flex flex-col animate-in fade-in zoom-in duration-200">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-200 mb-3">
+                <div class="flex items-center gap-2.5 text-indigo-700">
+                    <div class="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center">
+                        <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm sm:text-base font-bold text-slate-900">Historial de Pedidos & Ventas</h3>
+                        <p class="text-[10px] sm:text-[11px] text-slate-500">Modifica, anula o reenvía pedidos directamente desde tu dispositivo</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeHistoryModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold cursor-pointer">&times;</button>
+            </div>
+
+            <!-- Barra de Búsqueda -->
+            <div class="mb-3">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                    <input type="text" id="history-search-input" oninput="renderHistoryList()" placeholder="Buscar por cliente, DNI, escuela o N° pedido..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+            </div>
+
+            <!-- Listado de Pedidos Guardados -->
+            <div id="history-items-container" class="flex-1 overflow-y-auto space-y-2.5 pr-1 max-h-[60vh]">
+                <!-- Se genera dinámicamente con JS -->
+            </div>
+
+            <div class="pt-3 border-t border-slate-200 flex justify-between items-center text-xs">
+                <span class="text-slate-500 text-[11px]">Guardado automáticamente en la memoria del dispositivo</span>
+                <button type="button" onclick="closeHistoryModal()" class="py-1.5 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-semibold transition cursor-pointer">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- TOAST NOTIFICACIÓN FLOTANTE -->
     <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white text-xs font-semibold py-2.5 px-4 rounded-xl shadow-2xl border border-slate-700 hidden flex items-center gap-2 no-print">
         <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400"></i>
@@ -984,7 +1046,7 @@
     <script>
         // ESTADO GLOBAL CON PRODUCTO INICIAL EDITABLE
         let orderItems = [
-            { id: 1, name: 'Rotacuento Rojo (Físico - Efemérides Patrias & Grandes Héroes)', qty: 1, price: 0 }
+            { id: Date.now(), name: '', qty: 1, price: 0 }
         ];
 
         let signatureDataUrl = null;
@@ -998,9 +1060,108 @@
         let detectedEntities = {};
 
         // INICIALIZACIÓN AL CARGAR LA PÁGINA
+        
+        // GESTIÓN DE BORRADOR EN VIVO (ANTI-PÉRDIDA DE DATOS ACCIDENTAL)
+        function saveActiveDraft() {
+            try {
+                const draft = {
+                    tipoCompra: document.getElementById('select-tipo-compra') ? document.getElementById('select-tipo-compra').value : 'PERSONAL',
+                    estiloTitulo: document.getElementById('select-estilo-titulo-legal').value,
+                    nombre: document.getElementById('input-cliente-nombre').value,
+                    dni: document.getElementById('input-cliente-dni').value,
+                    cargo: document.getElementById('input-cliente-cargo').value,
+                    escuela: document.getElementById('input-cliente-escuela').value,
+                    domicilio: document.getElementById('input-cliente-domicilio').value,
+                    tel: document.getElementById('input-cliente-tel').value,
+                    email: document.getElementById('input-cliente-email').value,
+                    items: orderItems,
+                    anticipo: document.getElementById('input-anticipo').value,
+                    cuotas: document.getElementById('select-cuotas').value,
+                    primerVenc: document.getElementById('input-primer-vencimiento').value,
+                    medioPago: document.getElementById('select-medio-pago').value,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('arandumi_active_draft', JSON.stringify(draft));
+            } catch(e) {}
+        }
+
+        function restoreActiveDraft() {
+            try {
+                const raw = localStorage.getItem('arandumi_active_draft');
+                if (!raw) return false;
+                const draft = JSON.parse(raw);
+                if (!draft) return false;
+
+                // Si el borrador viejo en caché tenía el dato de prueba "Jorge Fernández", borrarlo automáticamente
+                if (draft.nombre && draft.nombre.toLowerCase().includes('fern')) {
+                    localStorage.removeItem('arandumi_active_draft');
+                    return false;
+                }
+                // Solo restaurar si hay datos reales
+                const hasData = draft.nombre || draft.dni || draft.escuela || draft.tel || (draft.items && draft.items.some(i => i.name));
+                if (!hasData) return false;
+
+                if (draft.tipoCompra && document.getElementById('select-tipo-compra')) document.getElementById('select-tipo-compra').value = draft.tipoCompra;
+                if (draft.estiloTitulo) document.getElementById('select-estilo-titulo-legal').value = draft.estiloTitulo;
+                if (draft.nombre) document.getElementById('input-cliente-nombre').value = draft.nombre;
+                if (draft.dni) document.getElementById('input-cliente-dni').value = draft.dni;
+                if (draft.cargo) document.getElementById('input-cliente-cargo').value = draft.cargo;
+                if (draft.escuela) document.getElementById('input-cliente-escuela').value = draft.escuela;
+                if (draft.domicilio) document.getElementById('input-cliente-domicilio').value = draft.domicilio;
+                if (draft.tel) document.getElementById('input-cliente-tel').value = draft.tel;
+                if (draft.email) document.getElementById('input-cliente-email').value = draft.email;
+                if (draft.anticipo !== undefined) document.getElementById('input-anticipo').value = draft.anticipo;
+                if (draft.cuotas) document.getElementById('select-cuotas').value = draft.cuotas;
+                if (draft.primerVenc) document.getElementById('input-primer-vencimiento').value = draft.primerVenc;
+                if (draft.medioPago) document.getElementById('select-medio-pago').value = draft.medioPago;
+
+                if (draft.items && draft.items.length > 0) {
+                    orderItems = draft.items;
+                }
+                return true;
+            } catch(e) {
+                return false;
+            }
+        }
+
+        function confirmNewSale() {
+            if (confirm("¿Deseas iniciar una nueva venta en blanco? Se limpiarán los datos cargados.")) {
+                resetFormClean();
+                showToast("Formulario en blanco listo para una nueva venta");
+            }
+        }
+
+        function resetFormClean() {
+            localStorage.removeItem('arandumi_active_draft');
+            document.getElementById('input-cliente-nombre').value = '';
+            document.getElementById('input-cliente-dni').value = '';
+            document.getElementById('input-cliente-cargo').value = '';
+            document.getElementById('input-cliente-escuela').value = '';
+            document.getElementById('input-cliente-domicilio').value = '';
+            document.getElementById('input-cliente-tel').value = '';
+            document.getElementById('input-cliente-email').value = '';
+            document.getElementById('input-anticipo').value = '0';
+            document.getElementById('select-cuotas').value = '1';
+
+            // Generar nuevo número de pedido automático
+            const now = new Date();
+            const randomNum = String(Math.floor(Math.random() * 900) + 100);
+            document.getElementById('input-nro-solicitud').value = `SP-${now.getFullYear()}-${randomNum}`;
+            
+            orderItems = [
+                { id: Date.now(), name: '', qty: 1, price: 0 }
+            ];
+
+            clearSignature();
+            renderItemsList();
+            calculateFinancing();
+            updateDocument();
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             initDates();
             initSignaturePad();
+            updateHistoryCountBadge();
             loadUrlParameters();
             renderItemsList();
             calculateFinancing();
@@ -1668,6 +1829,7 @@
             });
 
             calculateTotal();
+            saveActiveDraft();
         }
 
         function addBlankItem() {
@@ -1713,6 +1875,7 @@
         function updateItemQty(index, qty) {
             orderItems[index].qty = Math.max(1, parseInt(qty) || 1);
             calculateTotal();
+            saveActiveDraft();
             calculateFinancing();
             updateDocument();
         }
@@ -1725,6 +1888,7 @@
         function updateItemPrice(index, price) {
             orderItems[index].price = Math.max(0, parseFloat(price) || 0);
             calculateTotal();
+            saveActiveDraft();
             calculateFinancing();
             updateDocument();
         }
@@ -1738,6 +1902,7 @@
         // 4. CÁLCULO FINANCIERO Y CUOTAS
         function calculateFinancing() {
             const total = calculateTotal();
+            saveActiveDraft();
             const anticipoInput = document.getElementById('input-anticipo');
             let anticipo = parseFloat(anticipoInput.value) || 0;
             
@@ -2001,43 +2166,218 @@
             });
         }
 
-        // 7.1 GESTOR DE HISTORIAL LOCAL DE CLIENTES Y VENTAS (Nunca se pierde nada)
+        // 7.1 GESTOR DE HISTORIAL LOCAL DE VENTAS (MODIFICAR, ANULAR Y REENVIAR)
         function saveOrderToLocalHistory() {
             try {
+                const nombre = document.getElementById('input-cliente-nombre').value.trim();
+                const nro = document.getElementById('input-nro-solicitud').value.trim();
+                if (!nombre && (!orderItems || !orderItems.some(i => i.name))) return;
+
                 const history = JSON.parse(localStorage.getItem('arandumi_orders_history') || '[]');
                 const currentOrder = {
                     id: Date.now(),
-                    nro: document.getElementById('input-nro-solicitud').value,
+                    nro: nro || `SP-${new Date().getFullYear()}-001`,
                     fecha: document.getElementById('input-fecha-emision').value,
-                    cliente: document.getElementById('input-cliente-nombre').value,
+                    tipoCompra: document.getElementById('select-tipo-compra') ? document.getElementById('select-tipo-compra').value : 'PERSONAL',
+                    estiloTitulo: document.getElementById('select-estilo-titulo-legal').value,
+                    cliente: nombre,
                     dni: document.getElementById('input-cliente-dni').value,
                     escuela: document.getElementById('input-cliente-escuela').value,
                     cargo: document.getElementById('input-cliente-cargo').value,
+                    domicilio: document.getElementById('input-cliente-domicilio').value,
                     tel: document.getElementById('input-cliente-tel').value,
                     email: document.getElementById('input-cliente-email').value,
-                    items: [...orderItems],
+                    items: JSON.parse(JSON.stringify(orderItems)),
                     total: calculateTotal(),
                     anticipo: parseFloat(document.getElementById('input-anticipo').value) || 0,
                     cuotas: parseInt(document.getElementById('select-cuotas').value) || 1,
                     valorCuota: document.getElementById('input-valor-cuota').value,
                     medioPago: document.getElementById('select-medio-pago').value,
                     vencimiento: document.getElementById('input-primer-vencimiento').value,
+                    estado: 'ACTIVO',
                     timestamp: new Date().toISOString()
                 };
 
-                // Actualizar o agregar
                 const existingIdx = history.findIndex(h => h.nro === currentOrder.nro);
                 if (existingIdx >= 0) {
+                    currentOrder.estado = history[existingIdx].estado || 'ACTIVO';
                     history[existingIdx] = currentOrder;
                 } else {
                     history.unshift(currentOrder);
                 }
 
                 localStorage.setItem('arandumi_orders_history', JSON.stringify(history));
+                updateHistoryCountBadge();
             } catch(e) {
                 console.warn("No se pudo guardar en localStorage:", e);
             }
         }
+
+        function updateHistoryCountBadge() {
+            try {
+                const history = JSON.parse(localStorage.getItem('arandumi_orders_history') || '[]');
+                const badge = document.getElementById('history-count-badge');
+                if (badge) badge.textContent = history.length;
+            } catch(e) {}
+        }
+
+        function openHistoryModal() {
+            saveOrderToLocalHistory();
+            renderHistoryList();
+            document.getElementById('modal-history').classList.remove('hidden');
+        }
+
+        function closeHistoryModal() {
+            document.getElementById('modal-history').classList.add('hidden');
+        }
+
+        function renderHistoryList() {
+            const container = document.getElementById('history-items-container');
+            const search = (document.getElementById('history-search-input').value || '').toLowerCase();
+            const history = JSON.parse(localStorage.getItem('arandumi_orders_history') || '[]');
+
+            container.innerHTML = '';
+
+            const filtered = history.filter(o => {
+                const t = `${o.nro} ${o.cliente} ${o.dni} ${o.escuela} ${o.tel}`.toLowerCase();
+                return t.includes(search);
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-400">
+                        <i class="fa-solid fa-folder-open text-3xl mb-2"></i>
+                        <p class="text-xs">No hay pedidos registrados en el historial todavía.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach((order) => {
+                const isAnulado = order.estado === 'ANULADO';
+                const card = document.createElement('div');
+                card.className = `p-3.5 rounded-xl border ${isAnulado ? 'bg-rose-50/70 border-rose-200' : 'bg-slate-50 border-slate-200'} shadow-sm transition hover:shadow-md text-xs space-y-2`;
+                
+                let itemsListText = (order.items || []).map(i => `${i.qty}x ${i.name || 'Material'} ($${(i.price || 0).toLocaleString('es-AR')})`).join(', ');
+
+                card.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-1.5 pb-2 border-b ${isAnulado ? 'border-rose-200' : 'border-slate-200'}">
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-300">${order.nro}</span>
+                            <span class="text-[11px] text-slate-500">${order.fecha || ''}</span>
+                        </div>
+                        <div>
+                            ${isAnulado ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-200 text-rose-800 uppercase tracking-wider">ANULADO</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase tracking-wider">ACTIVO</span>'}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11.5px]">
+                        <div>
+                            <p class="font-bold text-slate-900 flex items-center gap-1">
+                                <i class="fa-solid fa-user text-amber-600"></i> ${escapeHtml(order.cliente || 'Sin Nombre')}
+                            </p>
+                            <p class="text-slate-600 text-[11px]">${escapeHtml(order.escuela || 'Particular')} • DNI: ${order.dni || '-'}</p>
+                            <p class="text-slate-500 text-[10.5px]">Tel: ${order.tel || '-'} • ${order.email || ''}</p>
+                        </div>
+                        <div class="sm:text-right">
+                            <p class="font-bold text-slate-900 text-sm font-mono">$ ${(order.total || 0).toLocaleString('es-AR')}</p>
+                            <p class="text-slate-600 text-[11px]">${order.cuotas > 1 ? `${order.cuotas} cuotas de $ ${order.valorCuota}` : '1 pago directo / Contado'}</p>
+                            <p class="text-slate-500 text-[10.5px]">${order.medioPago || ''}</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-2 rounded border border-slate-200 text-[11px] text-slate-700 font-medium">
+                        <span class="font-bold text-slate-900">Material:</span> ${escapeHtml(itemsListText || 'Sin detalle')}
+                    </div>
+
+                    <!-- Botones de Acción sobre el Pedido -->
+                    <div class="flex flex-wrap items-center justify-end gap-1.5 pt-1">
+                        <button type="button" onclick="loadOrderToForm(${order.id})" title="Cargar y modificar este pedido en el formulario" class="px-2.5 py-1 rounded bg-brand-800 hover:bg-brand-700 text-white font-semibold text-[11px] flex items-center gap-1 cursor-pointer">
+                            <i class="fa-solid fa-pen-to-square"></i> Modificar
+                        </button>
+                        <button type="button" onclick="quickWhatsAppOrder(${order.id})" title="Enviar WhatsApp de este pedido" class="px-2.5 py-1 rounded bg-green-600 hover:bg-green-500 text-white font-semibold text-[11px] flex items-center gap-1 cursor-pointer">
+                            <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                        </button>
+                        <button type="button" onclick="toggleCancelOrder(${order.id})" title="${isAnulado ? 'Reactivar pedido' : 'Anular pedido'}" class="px-2.5 py-1 rounded ${isAnulado ? 'bg-amber-600 hover:bg-amber-500 text-white' : 'bg-slate-200 hover:bg-rose-100 text-rose-700'} font-semibold text-[11px] flex items-center gap-1 cursor-pointer">
+                            <i class="fa-solid ${isAnulado ? 'fa-rotate-left' : 'fa-ban'}"></i> ${isAnulado ? 'Reactivar' : 'Anular'}
+                        </button>
+                        <button type="button" onclick="deleteOrderFromHistory(${order.id})" title="Eliminar registro" class="px-2 py-1 rounded bg-slate-100 hover:bg-rose-200 text-slate-500 hover:text-rose-800 text-[11px] cursor-pointer">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function loadOrderToForm(orderId) {
+            const history = JSON.parse(localStorage.getItem('arandumi_orders_history') || '[]');
+            const order = history.find(o => o.id === orderId);
+            if (!order) return;
+
+            document.getElementById('input-nro-solicitud').value = order.nro || '';
+            document.getElementById('input-fecha-emision').value = order.fecha || '';
+            if (order.tipoCompra && document.getElementById('select-tipo-compra')) document.getElementById('select-tipo-compra').value = order.tipoCompra;
+            if (order.estiloTitulo) document.getElementById('select-estilo-titulo-legal').value = order.estiloTitulo;
+            
+            document.getElementById('input-cliente-nombre').value = order.cliente || '';
+            document.getElementById('input-cliente-dni').value = order.dni || '';
+            document.getElementById('input-cliente-cargo').value = order.cargo || '';
+            document.getElementById('input-cliente-escuela').value = order.escuela || '';
+            document.getElementById('input-cliente-domicilio').value = order.domicilio || '';
+            document.getElementById('input-cliente-tel').value = order.tel || '';
+            document.getElementById('input-cliente-email').value = order.email || '';
+            document.getElementById('input-anticipo').value = order.anticipo || 0;
+            document.getElementById('select-cuotas').value = order.cuotas || 1;
+            if (order.vencimiento) document.getElementById('input-primer-vencimiento').value = order.vencimiento;
+            if (order.medioPago) document.getElementById('select-medio-pago').value = order.medioPago;
+
+            if (order.items && order.items.length > 0) {
+                orderItems = JSON.parse(JSON.stringify(order.items));
+            }
+
+            renderItemsList();
+            calculateFinancing();
+            updateDocument();
+            closeHistoryModal();
+
+            if (typeof setTab === 'function' && window.innerWidth < 1024) {
+                setTab('editor');
+            }
+
+            showToast(`¡Pedido ${order.nro} cargado en el formulario! Puedes modificarlo y guardarlo.`);
+        }
+
+        function toggleCancelOrder(orderId) {
+            const history = JSON.parse(localStorage.getItem('arandumi_orders_history') || '[]');
+            const idx = history.findIndex(o => o.id === orderId);
+            if (idx === -1) return;
+
+            const current = history[idx].estado || 'ACTIVO';
+            const nuevoEstado = current === 'ACTIVO' ? 'ANULADO' : 'ACTIVO';
+            history[idx].estado = nuevoEstado;
+
+            localStorage.setItem('arandumi_orders_history', JSON.stringify(history));
+            renderHistoryList();
+            showToast(`Pedido ${history[idx].nro} marcado como ${nuevoEstado}`);
+        }
+
+        function deleteOrderFromHistory(orderId) {
+            if (!confirm("¿Seguro que deseas eliminar definitivamente este pedido del historial?")) return;
+
+            let history = JSON.parse(localStorage.getItem('arandumi_orders_history') || '[]');
+            history = history.filter(o => o.id !== orderId);
+            localStorage.setItem('arandumi_orders_history', JSON.stringify(history));
+            updateHistoryCountBadge();
+            renderHistoryList();
+            showToast("Registro eliminado del historial");
+        }
+
+        function quickWhatsAppOrder(orderId) {
+            loadOrderToForm(orderId);
+            openWhatsAppModal();
+        }
+
 
         // 8. VISTA PREVIA Y PESTAÑAS MÓVILES
         function setTab(tab) {
@@ -2075,11 +2415,13 @@
 
         // 9. MODAL EMAIL
         function openEmailModal() {
+            saveOrderToLocalHistory();
             const nombre = document.getElementById('input-cliente-nombre').value || 'Docente';
             const email = document.getElementById('input-cliente-email').value || '';
             const escuela = document.getElementById('input-cliente-escuela').value || '';
             const nro = document.getElementById('input-nro-solicitud').value || 'SP-2026-0001';
             const total = calculateTotal();
+            saveActiveDraft();
             const anticipo = parseFloat(document.getElementById('input-anticipo').value) || 0;
             const saldo = Math.max(0, total - anticipo);
             const cuotas = document.getElementById('select-cuotas').value;
@@ -2157,68 +2499,102 @@ Corrientes, Argentina`;
             window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
         }
 
-        // 10. MODAL WHATSAPP & PARÁMETROS N8N
+        // 10. MODAL WHATSAPP ÁGIL: Pago Directo (Contado) vs Plan en Cuotas (Crédito)
         function openWhatsAppModal() {
+            saveOrderToLocalHistory();
             const nombre = document.getElementById('input-cliente-nombre').value || 'Docente';
-            const escuela = document.getElementById('input-cliente-escuela').value || '';
+            const escuela = (document.getElementById('input-cliente-escuela').value || '').trim();
             const nro = document.getElementById('input-nro-solicitud').value || '';
             const total = calculateTotal();
+            saveActiveDraft();
             const anticipo = parseFloat(document.getElementById('input-anticipo').value) || 0;
             const saldo = Math.max(0, total - anticipo);
-            const cuotas = document.getElementById('select-cuotas').value;
+            const cuotas = parseInt(document.getElementById('select-cuotas').value) || 1;
             const valorCuota = document.getElementById('input-valor-cuota').value;
             const venc = formatDateArg(document.getElementById('input-primer-vencimiento').value);
-            const tel = document.getElementById('input-cliente-tel').value.replace(/\D/g, '');
             const email = document.getElementById('input-cliente-email').value;
             const medioPago = document.getElementById('select-medio-pago').value;
             const datosBancarios = document.getElementById('input-datos-bancarios').value;
 
+            const tipoCompra = document.getElementById('select-tipo-compra') ? document.getElementById('select-tipo-compra').value : 'PERSONAL';
+
             let msg = `📚 *ARANDUMÍ LIBROS & EDITORIAL*
 `;
-            msg += `*Solicitud de Pedido & Convenio de Adquisición N° ${nro}*
+            msg += `*Pedido N° ${nro}*
 
 `;
-            msg += `¡Hola ${nombre}! Confirmamos el registro formal de tu pedido${escuela ? ' para ' + escuela : ''}.
+            if (tipoCompra === 'INSTITUCIONAL') {
+                msg += `¡Hola ${nombre}! Confirmamos el registro del pedido institucional para *${escuela || 'la Institución'}*:
 
 `;
-            msg += `📋 *Detalle del Pedido:*
+            } else {
+                msg += `¡Hola ${nombre}! Confirmamos el registro de tu pedido personal${escuela ? ' (Docente en ' + escuela + ')' : ''}:
+
+`;
+            }
+            
+            msg += `📋 *Detalle del Material:*
 `;
             orderItems.forEach(i => {
                 msg += `• ${i.qty}x ${i.name} ($${i.price.toLocaleString('es-AR')})
 `;
             });
-            msg += `
-💰 *Total Pedido:* $${total.toLocaleString('es-AR')}
+
+            // VENTA DIRECTA / CONTADO (1 PAGO)
+            if (cuotas === 1) {
+                msg += `
+💰 *Total a Abonar:* $${total.toLocaleString('es-AR')}
 `;
-            if (anticipo > 0) {
-                msg += `💵 *Anticipo / Entrega Inicial:* $${anticipo.toLocaleString('es-AR')}
+                msg += `💳 *Medio de Pago:* ${medioPago}
+`;
+                if (datosBancarios) {
+                    msg += `🏦 *Datos para Transferir:*
+${datosBancarios}
+`;
+                }
+                msg += `
+📲 *Comprobante:* Una vez realizada la transferencia, podés enviarnos la captura o comprobante respondiendo a este mismo WhatsApp.
+`;
+            } 
+            // VENTA A CRÉDITO EN CUOTAS (Rotacuentos, etc.)
+            else {
+                msg += `
+💰 *Total Compra:* $${total.toLocaleString('es-AR')}
+`;
+                if (anticipo > 0) {
+                    msg += `💵 *Entrega Inicial / Anticipo:* $${anticipo.toLocaleString('es-AR')}
+`;
+                }
+                msg += `📝 *Saldo Financiado:* $${saldo.toLocaleString('es-AR')}
+`;
+                msg += `🗓️ *Plan Acordado:* ${cuotas} cuotas fijas de $${valorCuota}
+`;
+                msg += `📌 *1° Vencimiento:* ${venc}
+`;
+                msg += `💳 *Medio de Pago:* ${medioPago}
+`;
+                if (datosBancarios) {
+                    msg += `🏦 *Datos de Cobro:*
+${datosBancarios}
+`;
+                }
+                msg += `
+📲 *Comprobante:* Podés enviar la captura de cada cuota directamente a este chat para acreditarla en tu cuenta.
 `;
             }
-            msg += `📝 *Saldo Financiado:* $${saldo.toLocaleString('es-AR')}
-`;
-            msg += `🗓️ *Plan de Cuotas:* ${cuotas} cuotas fijas de $${valorCuota}
-`;
-            msg += `📌 *1° Vencimiento:* ${venc}
-`;
-            msg += `💳 *Medio de Pago:* ${medioPago}
-`;
+
             if (email) {
-                msg += `📧 *Email de Facturación / Envío:* ${email}
+                msg += `📧 *Email:* ${email}
 `;
             }
-            if (datosBancarios) {
-                msg += `🏦 *Datos de Cobro:* ${datosBancarios}
-`;
-            }
-            msg += `
-✍️ Podés revisar y firmar digitalmente tu solicitud en el siguiente enlace oficial:
-`;
-            
+
             const currentUrl = generatePrefillUrl();
-            msg += `${currentUrl}
+            msg += `
+📄 *Comprobante Digital Oficial:*
+${currentUrl}
 
 `;
-            msg += `_Arandumí Libros - Materiales Educativos de Alto Impacto_`;
+            msg += `_¡Muchas gracias por elegir Arandumí Libros!_`;
 
             document.getElementById('whatsapp-message-preview').value = msg;
             document.getElementById('prefill-url-input').value = currentUrl;
@@ -2299,6 +2675,7 @@ Corrientes, Argentina`;
 
         function getStructuredJSON() {
             const total = calculateTotal();
+            saveActiveDraft();
             const anticipo = parseFloat(document.getElementById('input-anticipo').value) || 0;
             const saldo = Math.max(0, total - anticipo);
             const cuotasQty = parseInt(document.getElementById('select-cuotas').value) || 1;
