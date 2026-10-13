@@ -215,7 +215,7 @@
                         </div>
                         <div>
                             <label class="block text-[11px] font-semibold text-slate-600 mb-1">Lugar y Fecha Emisión</label>
-                            <input type="text" id="input-fecha-emision" value="Corrientes, 02 de Septiembre de 2026" oninput="updateDocument()" class="w-full text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none">
+                            <input type="text" id="input-fecha-emision" value="" placeholder="Ej: Corrientes, 13 de Octubre de 2026" oninput="updateDocument()" class="w-full text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-2 focus:ring-brand-600 focus:outline-none">
                         </div>
                     </div>
 
@@ -598,7 +598,7 @@
                                     SOLICITUD DE PEDIDO
                                 </span>
                                 <div class="text-xs font-mono font-bold text-slate-800" id="doc-nro-solicitud">SP-2026-0089</div>
-                                <div class="text-[9px] sm:text-[10px] text-slate-500 mt-0.5" id="doc-fecha-emision">Corrientes, 02 de Septiembre de 2026</div>
+                                <div class="text-[9px] sm:text-[10px] text-slate-500 mt-0.5" id="doc-fecha-emision">Corrientes</div>
                             </div>
                         </div>
                     </div>
@@ -1152,6 +1152,7 @@
                 { id: Date.now(), name: '', qty: 1, price: 0 }
             ];
 
+            initDates(true);
             clearSignature();
             renderItemsList();
             calculateFinancing();
@@ -1159,22 +1160,31 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            initDates();
+            initDates(true);
             initSignaturePad();
             updateHistoryCountBadge();
+            restoreActiveDraft();
             loadUrlParameters();
             renderItemsList();
             calculateFinancing();
             updateDocument();
         });
 
-        // 1. FECHAS POR DEFECTO
-        function initDates() {
+        // 1. FECHA EN TIEMPO REAL AUTOMÁTICA (100% EDITABLE MANUALMENTE)
+        function getFormattedTodayString() {
             const today = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const fechaStr = `Corrientes, ${today.toLocaleDateString('es-AR', options)}`;
+            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            const dia = String(today.getDate()).padStart(2, '0');
+            const mes = meses[today.getMonth()];
+            const anio = today.getFullYear();
+            return `Corrientes, ${dia} de ${mes} de ${anio}`;
+        }
+
+        function initDates(forceToday = false) {
+            const today = new Date();
+            const fechaStr = getFormattedTodayString();
             const inputFecha = document.getElementById('input-fecha-emision');
-            if (inputFecha && !inputFecha.value) {
+            if (inputFecha && (forceToday || !inputFecha.value || inputFecha.value.includes('02 de Septiembre'))) {
                 inputFecha.value = fechaStr;
             }
 
@@ -1183,7 +1193,7 @@
             const mm = String(nextMonth.getMonth() + 1).padStart(2, '0');
             const dd = String(nextMonth.getDate()).padStart(2, '0');
             const primerVencInput = document.getElementById('input-primer-vencimiento');
-            if (primerVencInput && !primerVencInput.value) {
+            if (primerVencInput && (forceToday || !primerVencInput.value)) {
                 primerVencInput.value = `${yyyy}-${mm}-${dd}`;
             }
         }
