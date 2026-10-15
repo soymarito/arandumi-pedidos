@@ -66,8 +66,8 @@
           <span class="text-xs font-semibold uppercase tracking-wider">Desfasaje Puesto</span>
           <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-500"></i>
         </div>
-        <div class="text-2xl font-bold text-amber-600">3</div>
-        <div class="text-[11px] text-amber-700/80 mt-1 font-medium">30% riesgo sindical / convenio</div>
+        <div class="text-2xl font-bold text-amber-600" id="kpi-puesto">3</div>
+        <div class="text-[11px] text-amber-700/80 mt-1 font-medium">Riesgo sindical / convenio</div>
       </div>
 
       <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
@@ -75,7 +75,7 @@
           <span class="text-xs font-semibold uppercase tracking-wider">Domicilio Dudoso</span>
           <i data-lucide="map-pin-off" class="w-4 h-4 text-rose-500"></i>
         </div>
-        <div class="text-2xl font-bold text-rose-600">2</div>
+        <div class="text-2xl font-bold text-rose-600" id="kpi-domicilio">2</div>
         <div class="text-[11px] text-rose-700/80 mt-1 font-medium">Riesgo en notificaciones/cartas</div>
       </div>
 
@@ -84,8 +84,8 @@
           <span class="text-xs font-semibold uppercase tracking-wider">Celulares Empresa</span>
           <i data-lucide="smartphone" class="w-4 h-4 text-indigo-500"></i>
         </div>
-        <div class="text-2xl font-bold text-indigo-700">7</div>
-        <div class="text-[11px] text-indigo-600/80 mt-1 font-medium">70% de la dotación provista</div>
+        <div class="text-2xl font-bold text-indigo-700" id="kpi-celulares">7</div>
+        <div class="text-[11px] text-indigo-600/80 mt-1 font-medium">Dotación provista</div>
       </div>
 
       <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
@@ -93,8 +93,8 @@
           <span class="text-xs font-semibold uppercase tracking-wider">Legajos en Regla</span>
           <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i>
         </div>
-        <div class="text-2xl font-bold text-emerald-600">4</div>
-        <div class="text-[11px] text-emerald-700/80 mt-1 font-medium">40% sin observaciones</div>
+        <div class="text-2xl font-bold text-emerald-600" id="kpi-regla">4</div>
+        <div class="text-[11px] text-emerald-700/80 mt-1 font-medium">Sin observaciones</div>
       </div>
     </div>
 
@@ -271,7 +271,7 @@
           <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
             <i data-lucide="pie-chart" class="w-4 h-4 text-blue-600"></i> Estado de los Legajos (Riesgo Legal)
           </h3>
-          <span class="text-[11px] text-slate-400">Total: 10 Casos Muestra</span>
+          <span class="text-[11px] text-slate-400" id="txt-total-casos">Total: 10 Casos Relevados</span>
         </div>
         <div class="h-56 relative flex items-center justify-center">
           <canvas id="chartRiesgo"></canvas>
@@ -1027,20 +1027,41 @@
           familiar = "Familia a cargo informada en entrevista";
         }
 
-        // 7. Redes Sociales (Instagram, Facebook, X, TikTok)
+        // 7. Redes Sociales (Instagram, Facebook, X, TikTok) - Soporta con y sin @
         let redes = "No declara";
         let mRedes = [];
-        const mIG = texto.match(/(?:instagram|ig)\s*(?::|es)?\s*(@?[\w\._]+)/i);
-        if (mIG) mRedes.push(`IG: @${mIG[1].replace('@','')}`);
 
-        const mFB = texto.match(/(?:facebook|fb)\s*(?::|es)?\s*([A-Za-z0-9\.\s]{3,25}?)(?:,|\.|\sx\b|ig\b|dni\b|cel\b|familia\b|$)/i);
-        if (mFB && !/instagram|twitter|tiktok/i.test(mFB[1])) mRedes.push(`FB: ${mFB[1].trim()}`);
+        // Facebook: acepta "facebook marito26", "fb marito26", "facebook: marito26"
+        const mFB = texto.match(/(?:facebook|fb)\s*(?::|es)?\s*@?([A-Za-z0-9_\.]{3,30})/i);
+        if (mFB && !/instagram|twitter|tiktok|dni|cel|domicilio/i.test(mFB[1])) {
+          mRedes.push(`FB: ${mFB[1].trim()}`);
+        }
 
-        const mX = texto.match(/(?:x|twitter)\s*(?::|es)?\s*(@?[\w\._]+)/i);
-        if (mX) mRedes.push(`X: @${mX[1].replace('@','')}`);
+        // Instagram: acepta "instagram marito26", "ig @marito26"
+        const mIG = texto.match(/(?:instagram|ig)\s*(?::|es)?\s*@?([A-Za-z0-9_\.]{3,30})/i);
+        if (mIG) {
+          mRedes.push(`IG: @${mIG[1].trim()}`);
+        }
 
-        const mTK = texto.match(/(?:tiktok|tik tok)\s*(?::|es)?\s*(@?[\w\._]+)/i);
-        if (mTK) mRedes.push(`TK: @${mTK[1].replace('@','')}`);
+        // X / Twitter: acepta "x marito26", "twitter @marito26"
+        const mX = texto.match(/(?:x|twitter)\s*(?::|es)?\s*@?([A-Za-z0-9_\.]{3,30})/i);
+        if (mX) {
+          mRedes.push(`X: @${mX[1].trim()}`);
+        }
+
+        // TikTok: acepta "tiktok marito26"
+        const mTK = texto.match(/(?:tiktok|tik tok)\s*(?::|es)?\s*@?([A-Za-z0-9_\.]{3,30})/i);
+        if (mTK) {
+          mRedes.push(`TK: @${mTK[1].trim()}`);
+        }
+
+        // Si puso un @ suelto sin decir la red: ej: @marito26
+        if (mRedes.length === 0) {
+          const mArroba = texto.match(/@([A-Za-z0-9_\.]{3,30})/);
+          if (mArroba) {
+            mRedes.push(`@${mArroba[1]}`);
+          }
+        }
 
         if (mRedes.length > 0) {
           redes = mRedes.join(' | ');
@@ -1096,8 +1117,9 @@
           emp.observaciones = `${emp.observaciones} | Actualizado: Domicilio ${domicilio}`;
 
           renderTabla(datosEmpleados);
+          recalcularTodo();
           btn.innerHTML = `<i data-lucide="check-check" class="w-4 h-4 text-emerald-300"></i> Legajo #${emp.id} Actualizado`;
-          alert(`✅ ¡Registro de ${emp.nombre} actualizado con éxito! Nuevo domicilio: ${domicilio}`);
+          alert(`✅ ¡Registro de ${emp.nombre} actualizado con éxito! Nuevo domicilio: ${domicilio} | Redes: ${redes}`);
         } else {
           // INSERTAR NUEVO EMPLEADO
           const nuevoEmp = {
@@ -1119,7 +1141,7 @@
 
           datosEmpleados.unshift(nuevoEmp);
           renderTabla(datosEmpleados);
-          document.getElementById("kpi-total").innerText = datosEmpleados.length;
+          recalcularTodo();
           btn.innerHTML = `<i data-lucide="check" class="w-4 h-4 text-emerald-300"></i> Extraído y Guardado`;
         }
 
@@ -1133,14 +1155,54 @@
       }, 600);
     }
 
-    // INICIALIZACIÓN DE GRÁFICOS
+    // INSTANCIAS GLOBALES DE GRÁFICOS
+    let chartRiesgoInstance = null;
+    let chartBasesInstance = null;
+
+    // RECALCULAR KPIS Y GRÁFICOS DINÁMICAMENTE EN TIEMPO REAL
+    function recalcularTodo() {
+      const total = datosEmpleados.length;
+      const regla = datosEmpleados.filter(e => e.estado.includes("REGLA")).length;
+      const desfasaje = datosEmpleados.filter(e => e.estado.includes("LEGAL") || e.estado.includes("RIESGO")).length;
+      const domicilio = datosEmpleados.filter(e => e.estado.includes("DOMICILIO") || (e.domicilio && e.domicilio.includes("verificar"))).length;
+      const celulares = datosEmpleados.filter(e => e.celEmpresa && !e.celEmpresa.includes("No provisto")).length;
+      const pendientes = datosEmpleados.filter(e => e.estado.includes("PENDIENTE")).length;
+
+      // Actualizar contadores superiores
+      if (document.getElementById("kpi-total")) document.getElementById("kpi-total").innerText = total;
+      if (document.getElementById("kpi-puesto")) document.getElementById("kpi-puesto").innerText = desfasaje;
+      if (document.getElementById("kpi-domicilio")) document.getElementById("kpi-domicilio").innerText = domicilio;
+      if (document.getElementById("kpi-celulares")) document.getElementById("kpi-celulares").innerText = celulares;
+      if (document.getElementById("kpi-regla")) document.getElementById("kpi-regla").innerText = regla;
+      if (document.getElementById("txt-total-casos")) document.getElementById("txt-total-casos").innerText = `Total: ${total} Casos Relevados`;
+
+      // Actualizar Gráfico de Riesgo
+      if (chartRiesgoInstance) {
+        chartRiesgoInstance.data.datasets[0].data = [regla, desfasaje, domicilio, pendientes];
+        chartRiesgoInstance.update();
+      }
+
+      // Actualizar Gráfico de Bases
+      if (chartBasesInstance) {
+        const larga = datosEmpleados.filter(e => e.base && (e.base.includes("Larga Distancia") || e.base.includes("Ruta"))).length;
+        const taller = datosEmpleados.filter(e => e.base && e.base.includes("Taller")).length;
+        const deposito = datosEmpleados.filter(e => e.base && e.base.includes("Depósito")).length;
+        const docksud = datosEmpleados.filter(e => e.base && e.base.includes("Dock Sud")).length;
+        const oficinas = datosEmpleados.filter(e => e.base && e.base.includes("Oficinas")).length;
+
+        chartBasesInstance.data.datasets[0].data = [larga, taller, deposito, docksud, oficinas];
+        chartBasesInstance.update();
+      }
+    }
+
+    // INICIALIZACIÓN DE GRÁFICOS Y CARGA
     window.addEventListener("DOMContentLoaded", () => {
       renderTabla(datosEmpleados);
       lucide.createIcons();
 
-      // Gráfico de Riesgo
+      // Gráfico de Riesgo (Inicialización dinámica)
       const ctxRiesgo = document.getElementById('chartRiesgo').getContext('2d');
-      new Chart(ctxRiesgo, {
+      chartRiesgoInstance = new Chart(ctxRiesgo, {
         type: 'doughnut',
         data: {
           labels: ['Legajos en Regla', 'Desfasaje de Puesto', 'Domicilio Dudoso', 'Falta Doc. Familiar'],
@@ -1160,9 +1222,9 @@
         }
       });
 
-      // Gráfico de Bases
+      // Gráfico de Bases (Inicialización dinámica)
       const ctxBases = document.getElementById('chartBases').getContext('2d');
-      new Chart(ctxBases, {
+      chartBasesInstance = new Chart(ctxBases, {
         type: 'bar',
         data: {
           labels: ['Larga Distancia', 'Taller Central', 'Depósito Central', 'Dock Sud', 'Oficinas'],
@@ -1183,6 +1245,9 @@
           }
         }
       });
+
+      // Sincroniza métricas y gráficos con la dotación real al inicio
+      recalcularTodo();
     });
   </script>
 </body>
